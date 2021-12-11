@@ -14,38 +14,68 @@
 // 
 
 #include "coordinator.h"
-
+#include "MyMessage_m.h"
+using namespace std;
 Define_Module(Coordinator);
 
 void Coordinator::initialize()
 {
     // TODO - Generated method body
     //read file n
+    cout << "Coordinator: initialize" <<endl;
     std::string file_name = "../inputsSamples/coordinator.txt";
     coordinationFile.open(file_name, std::ios::in);
-
-    if (!my_file)
+    if (!coordinationFile)
         ended = true;
     else
         ended = false;
-
-    string s;
-
-while (getline(coordinationFile, s))
-    {
-
-
+     string line;
+     while (getline(coordinationFile, line))
+     {
+        cout << "Coordinator: new line : "<< line <<endl;
         bool endoffile = coordinationFile.eof();
-
         if (endoffile || ended)
         {
             coordinationFile.close();
             ended = true;
+            cout << "111111111111" <<endl;
             break;
         }
+        string inputs;
+        vector<string> inputs_arr;
+        string space = " ";
+        size_t start_pos = 0, end_pos;
+        bool newline = false;
+        while ((end_pos = line.find(space, start_pos)) != std::string::npos)
+        {
+            newline = true;
+            string ss = line.substr(start_pos, end_pos - start_pos);
+            inputs_arr.push_back(ss);
+            cout << "Coordinator: splitting each part of the line : "<< ss << endl;
+            start_pos = end_pos + space.size();
+        }
+        string ss = line.substr(start_pos);
 
-        coordinationData.push(s);
-    }
+        if (newline == true)
+        {
+            inputs_arr.push_back(ss);
+            cout << "Coordinator: end of the line : "<< ss << endl;
+        }
+        // send message to each node
+        MyMessage_Base * msg = new MyMessage_Base(" ");
+        msg->setM_Payload(inputs_arr[1].c_str());
+        msg->setSeq_Num(-1);
+        msg->setM_Type(0);
+        if (inputs_arr[2]=="start") //sender seqNum = start time
+        {
+            cout << "check if the node is sender" << endl;
+            msg->setSeq_Num(stoi(inputs_arr[3]));
+        }
+        send(msg,"out",stoi(inputs_arr[0]));
+        cout << "send the data to the note" << endl;
+        inputs_arr.clear();
+      }
+
 
 
 }

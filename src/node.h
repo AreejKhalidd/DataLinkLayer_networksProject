@@ -17,7 +17,13 @@
 #define __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_NODE_H_
 
 #include <omnetpp.h>
+#include <fstream>
+#include <cmath>
+#include <vector>
+#include <queue>
+#include <bitset>
 
+using namespace std;
 using namespace omnetpp;
 
 /**
@@ -26,11 +32,16 @@ using namespace omnetpp;
 class Node : public cSimpleModule
 {
   protected:
-    std::fstream my_file;
-    std::fstream output;
+    //std::fstream my_file;
+    //std::fstream output;
+    std::fstream dataFile;
     bool finished = false;
+    bool ended = false;
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    bool sender = false;
+    vector<string> messages;
+    vector <string> errors;
 };
 
 #endif

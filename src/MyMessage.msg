@@ -13,29 +13,23 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_COORDINATOR_H_
-#define __DATA_LINK_LAYER_PROTOCOLS_SIMULATION_COORDINATOR_H_
-
-#include <omnetpp.h>
-#include <fstream>
-#include <cmath>
-#include <vector>
-#include <queue>
+//
+// TODO generated message class
+//
+cplusplus {{
 #include <bitset>
-using namespace omnetpp;
+typedef  std::bitset<8> bits;
+}}
+class noncobject bits;
 
-/**
- * TODO - Generated class
- */
-class Coordinator : public cSimpleModule
-{
-  protected:
-    std::fstream coordinationFile;
-    //queue<string> coordinationData;
+packet MyMessage {
+    @customize(true);  // see the generated C++ header for more info
+    int Seq_Num;
+    int M_Type;
+    string M_Payload;
+    bits mycheckbits;
+}
 
-    bool ended = false;
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-};
 
-#endif
+
+
