@@ -30,7 +30,15 @@ void Node::handleMessage(cMessage *msg)
     MyMessage_Base *mmsg = check_and_cast<MyMessage_Base *>(msg);
     int start = mmsg->getSeq_Num();
     int type = mmsg->getM_Type();
-    if( type == 0  ) // message from coordinator
+    if(msg->isSelfMessage())
+    {
+        //used for duplicated
+        MyMessage_Base *mmsg = check_and_cast<MyMessage_Base *>(msg);
+        cout << " will send duplicant message" << endl;
+        send(mmsg,"out");
+        // wait???????????
+    }
+    else if( type == 0  ) // message from coordinator
     {
         if(start != -1 ) // if node is sender then read file
         {
@@ -62,12 +70,9 @@ void Node::handleMessage(cMessage *msg)
 
              for(int i =0;i<messages.size();i++ )
              {
-                 MyMessage_Base * msgg = new MyMessage_Base(" ");
+                 MyMessage_Base * msgg = new MyMessage_Base();
                  msgg->setM_Type(1);
                  msgg->setSeq_Num(0);
-                 //check errors?
-
-
                  //byte stuffing
                  string final_payload = "$" ; // first flag byte
                  string msg_input = messages[i];
@@ -83,9 +88,54 @@ void Node::handleMessage(cMessage *msg)
                  }
                  final_payload = final_payload + '$'; // last flag byte
                  msgg->setM_Payload(final_payload.c_str()); // check erros
-                 cout << "Node send message before byte stuffing: " << msg_input <<endl;
-                 cout << "Node send message after byte stuffing : " << final_payload <<endl;
-                 send(msgg,"out");
+                 //cout << "Node send message before byte stuffing: " << msg_input <<endl;
+                 cout << "Node will send message after byte stuffing : " << final_payload <<endl;
+                 // Errors
+                 string curr_error = errors[i];
+                 cout << "ERROR IS :" << curr_error <<endl;
+                 // curr_error = 1101
+                 char mod_error = curr_error[0];
+                 char loss_error = curr_error[1];
+                 char dup_error = curr_error[2];
+                 char delay_error = curr_error[3];
+                 if(loss_error == '1') //skip this message
+                 {
+                     cout << "loss msg " << endl;
+                     continue;
+                 }
+
+                 if(mod_error == '1')
+                 {
+                     cout << "modi msg " << endl;
+                      int index=uniform(0,1)*10;
+                      const char* str = msgg->getM_Payload();
+                      string s = str;
+                      int size = s.size();
+                      while (index > size-1)
+                      {
+                          index=uniform(0,1)*10;
+                      }
+                      string mypayload= msgg->getM_Payload();
+                      mypayload[index]=mypayload[index]+5;
+                      msgg->setM_Payload(mypayload.c_str());
+                      cout << "msg after modi " << msgg->getM_Payload() <<endl;
+                 }
+                 if(delay_error == '1')
+                 {
+                     cout << "delayed msg " << endl;
+                     //sendDelayed(msgg,0.2,"out"); // delay in second from ini file
+                 }
+                 if(dup_error == '1')
+                 {
+                     cout << "dup msg " << endl;
+                     MyMessage_Base * msg_s = new MyMessage_Base();
+                     msg_s->setSeq_Num(msgg->getSeq_Num());
+                     msg_s->setM_Type(msgg->getM_Type());
+                     msg_s->setM_Payload( msgg->getM_Payload());
+                     scheduleAt(simTime() + 0.01, msg_s);
+                 }
+                   send(msgg,"out");
+                 // wait for ACK ?????????????????
              }
 
         }
@@ -115,19 +165,20 @@ void Node::handleMessage(cMessage *msg)
                    final_msg = final_msg + mymsg[i];
             }
         cout << " Node received message and will send ACK or NACK"<<endl;
-        cout << " message before de-stuffing "<< mymsg <<endl;
+        //cout << " message before de-stuffing "<< mymsg <<endl;
         cout << " message after de-stuffing "<< final_msg <<endl;
         // Detect errors
          MyMessage_Base * msg1 = new MyMessage_Base(" ");
          msg1->setM_Type(2);// send ACK
          msg1->setSeq_Num(0);
+         cout << "SSSSS" <<endl;
          send(msg1,"out");
-
-
     }
     else if (type == 2 || type == 3)
     {
         // ACK or NACK from receiver
+        // ACK OR NACK = true
+        cout << "REceived ACK/NACK " <<endl;
     }
 
 

@@ -42,6 +42,9 @@ class Node : public cSimpleModule
     bool sender = false;
     vector<string> messages;
     vector <string> errors;
+    bool ACK = false;
+    bool NACK = false;
+    bool dup_msg = false;
 };
 
 #endif
