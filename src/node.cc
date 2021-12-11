@@ -33,7 +33,7 @@ void Node::handleMessage(cMessage *msg)
     MyMessage_Base *mmsg = check_and_cast<MyMessage_Base *>(msg);
     int start = mmsg->getSeq_Num();
     int type = mmsg->getM_Type();
-    if(msg->isSelfMessage())
+    if(msg->isSelfMessage()) // self message only for duplicte messages
     {
         //used for duplicated
         MyMessage_Base *mmsg = check_and_cast<MyMessage_Base *>(msg);
@@ -41,7 +41,7 @@ void Node::handleMessage(cMessage *msg)
         send(mmsg,"out");
         // wait???????????
     }
-    else if( type == 0  ) // message from coordinator
+    else if( type == 0  ) // message from coordinator to any node (Sender/reciver)
     {
         if(start != -1 ) // if node is sender then read file
         {
@@ -142,16 +142,15 @@ void Node::handleMessage(cMessage *msg)
              }
 
         }
-        else
+        else // msg from coordintor to receiver
         {
             //receiver
             sender = false;
         }
 
     }
-    else if( type == 1  )
+    else if( type == 1  )// receiver receive data message from the other node
     {
-        // receiver receive message from node
         string mymsg = mmsg->getM_Payload();
         // de-stuffing
         string final_msg = "";
@@ -171,17 +170,18 @@ void Node::handleMessage(cMessage *msg)
         //cout << " message before de-stuffing "<< mymsg <<endl;
         cout << " message after de-stuffing "<< final_msg <<endl;
         // Detect errors
+        // send ACK
          MyMessage_Base * msg1 = new MyMessage_Base(" ");
-         msg1->setM_Type(2);// send ACK
+         msg1->setM_Type(2);
          msg1->setSeq_Num(0);
          cout << "SSSSS" <<endl;
          send(msg1,"out");
     }
     else if (type == 2 || type == 3)
     {
-        // ACK or NACK from receiver
+        // ACK or NACK from receiver to sender
         // ACK OR NACK = true
-        cout << "REceived ACK/NACK " <<endl;
+        cout << "Received ACK/NACK " <<endl;
     }
 
 
