@@ -18,7 +18,10 @@
 #include <stdlib.h> /* atoi */
 using namespace std;
 Define_Module(Node);
+
 // delete msg ???????????
+// check hwar el random number lw h3mel add seedset fl ini
+
 void Node::initialize()
 {
     // TODO - Generated method body
