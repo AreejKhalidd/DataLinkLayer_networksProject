@@ -39,15 +39,14 @@ class Node : public cSimpleModule
     bool ended = false;
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual string byteStuffing(string msg);
+    virtual string deStuffing(string msg);
     bool sender = false;
     vector<string> messages;
     vector <string> errors;
-    bool ACK = false;
-    bool NACK = false;
-    bool dup_msg = false;
-
+    int msg_seqno = 0;
+    int msg_ack = 0;
     ///////*******CRC Error Detection******\\\\\\\\
-
     const string generator="1001";
     virtual string calculateCRC(string M_Payload);
 };

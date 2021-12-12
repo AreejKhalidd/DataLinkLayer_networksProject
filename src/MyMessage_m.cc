@@ -226,6 +226,14 @@ void MyMessage_Base::parsimUnpack(omnetpp::cCommBuffer *b)
     doParsimUnpacking(b,this->mycheckbits);
 }
 
+int MyMessage_Base::getpiggybackingID() const
+{
+    return this->piggybackingID;
+}
+void MyMessage_Base::setpiggybackingID(int id)
+{
+    this->piggybackingID = id;
+}
 int MyMessage_Base::getSeq_Num() const
 {
     return this->Seq_Num;

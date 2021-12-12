@@ -63,10 +63,12 @@ typedef  std::bitset<8> bits;
 class MyMessage_Base : public ::omnetpp::cPacket
 {
   protected:
-    int Seq_Num; // time to send if node sender else = -1
-    int M_Type;  // 0 -> from coordinator to node , 1(Data) -> node to node , 2(ACK),3(NACK) node to node
-    ::omnetpp::opp_string M_Payload; // message
-    bits mycheckbits; // CRC
+    int piggybackingID; // ACk id
+    int Seq_Num; // if from coordinator -> seq = -1 receiver else sender with start = seq number
+    int M_Type; // if type == 0 from coordinator // if type == 1 (Data) sender to receiver node
+    // if type == 2 or 3(dup frame) receiver to sender with ack
+    ::omnetpp::opp_string M_Payload;
+    bits mycheckbits;
 
   private:
     void copy(const MyMessage_Base& other);
@@ -75,12 +77,12 @@ class MyMessage_Base : public ::omnetpp::cPacket
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const MyMessage_Base&);
     // make constructors protected to avoid instantiation
+    //MyMessage_Base(const char *name=nullptr, short kind=0);
     MyMessage_Base(const MyMessage_Base& other);
     // make assignment operator protected to force the user override it
     MyMessage_Base& operator=(const MyMessage_Base& other);
 
   public:
-
     MyMessage_Base(const char *name=nullptr, short kind=0);
     virtual ~MyMessage_Base();
     virtual MyMessage_Base *dup() const override {return new MyMessage_Base(*this);}
@@ -89,6 +91,8 @@ class MyMessage_Base : public ::omnetpp::cPacket
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
     // field getter/setter methods
+    virtual void setpiggybackingID(int num);
+    virtual int getpiggybackingID() const;
     virtual int getSeq_Num() const;
     virtual void setSeq_Num(int Seq_Num);
     virtual int getM_Type() const;

@@ -25,6 +25,7 @@ void Coordinator::initialize()
     cout << "Coordinator: initialize" <<endl;
     std::string file_name = "../inputsSamples/coordinator.txt";
     coordinationFile.open(file_name, std::ios::in);
+    EV << "Coordinator start initialization" <<endl;
     if (!coordinationFile)
         ended = true;
     else
@@ -48,6 +49,7 @@ void Coordinator::initialize()
         bool newline = false;
         while ((end_pos = line.find(space, start_pos)) != std::string::npos)
         {
+            cout << "2222" <<endl;
             newline = true;
             string ss = line.substr(start_pos, end_pos - start_pos);
             inputs_arr.push_back(ss);
@@ -71,12 +73,13 @@ void Coordinator::initialize()
             cout << "check if the node is sender" << endl;
             msg->setSeq_Num(stoi(inputs_arr[3]));
         }
+        EV << "Coordinator will send data to the node" << stoi(inputs_arr[0]) <<endl;
         send(msg,"out",stoi(inputs_arr[0]));
-        cout << "send the data to the note" << endl;
+        cout << "send the data to the node" << endl;
         inputs_arr.clear();
       }
 
-
+     EV << "Coordinator finished" << endl;
 
 }
 void Coordinator::handleMessage(cMessage *msg)
