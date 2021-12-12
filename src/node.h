@@ -45,6 +45,11 @@ class Node : public cSimpleModule
     bool ACK = false;
     bool NACK = false;
     bool dup_msg = false;
+
+    ///////*******CRC Error Detection******\\\\\\\\
+
+    const string generator="1001";
+    virtual string calculateCRC(string M_Payload);
 };
 
 #endif

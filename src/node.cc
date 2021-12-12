@@ -27,6 +27,125 @@ void Node::initialize()
     // TODO - Generated method body
 }
 
+string XORString(string a, string b)
+{
+    string str="";
+    for(int i=0;i<a.length();i++)
+    {
+        if(a[i]==b[i])
+            str+="0";
+        else
+            str+="1";
+    }
+    return str;
+}
+/*
+Main Concept of shifting bits and algorithm of CRC is got from : http://www.sunshine2k.de/articles/coding/crc/understanding_crc.html
+*/
+string Node::calculateCRC(string M_Payload){
+
+    string binaryStr="";
+    //converting message to binary string
+        for (int i = 0; i < M_Payload.length(); i++)
+        {
+                bitset<8> binaryBits(M_Payload[i]);
+                binaryStr+=binaryBits.to_string();
+        }
+        //append zeros at last of string
+        for(int i=0;i<generator.length();i++)
+        {
+            binaryStr+='0';
+        }
+        //Division
+        string binaryStr="";
+            for (int i = 0; i < M_Payload.length(); i++)
+            {
+                    bitset<8> binaryBits(M_Payload[i]);
+                    binaryStr+=binaryBits.to_string();
+            }
+                       cout<< binaryStr<<endl ;
+
+                  string generator ="1001" ;
+                for(int i=0;i<generator.length();i++)
+                {
+                    binaryStr+='0';
+                }
+                       cout<< binaryStr<<endl ;
+                       /*
+            long long int binaryArr=0;
+                for (int i =M_Payload.length()-1 ; i >=0 ; i--)
+                {
+                        bitset<8> binaryBits(M_Payload[i]);
+                        binaryArr=binaryArr >> (32);
+                        binaryArr+=stoi(binaryBits.to_string());
+                        cout<<binaryArr<<endl;
+                }
+                cout<<binaryArr;
+               //cout<< stoi(binaryStr)  ;
+
+        string str="";
+        cout<<str.length();
+        */
+        //string M_Payload="";
+        //string binaryStr="1110101010101010101010110010101011011";
+        //string generator="1001";
+            //converting message to binary string
+                for (int i = 0; i < M_Payload.length(); i++)
+                {
+                        bitset<8> binaryBits(M_Payload[i]);
+                        binaryStr+=binaryBits.to_string();
+                }
+                cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                //append zeros at last of string
+                for(int i=0;i<generator.length()-1;i++)
+                {
+                    binaryStr+='0';
+                }
+                cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                //Division
+                //int i=binaryStr.length();
+                int j=0;
+                string dividend="";
+                string str="";
+                bool first=true;
+                while( j<(binaryStr.length()))
+                {
+                    //Ensure that MSB is 1
+                    while(binaryStr[j]=='0' && str=="" && first)
+                    {
+                        j++;
+                        first=false;
+                    }
+                       // >0?str.length()-1:0;
+                    for(int z=(str.length());z<generator.length()&& j<binaryStr.length();z++)
+                    {
+                        str+=binaryStr[j];
+                        j++;
+                    }
+                  //cout<<"jjjjjj"<<j<<"   "<<str<<endl;
+                    if(str.length()<4)
+                        break;
+                    dividend=XORString(str,generator);
+                    //cout<<dividend<<endl;
+                    //int num=
+                    str="";
+                    str=stoi(dividend)>0?to_string(stoi(dividend)):"";
+                     //cout<<j<<endl;
+
+                }
+                //cout<<j<<endl;
+               // while(j<binaryStr.length())
+                 //   str+=binaryStr[j++];
+                if(str=="")
+                    str="0";
+
+                cout<<stoi(str);
+
+        //‘(x<<y)’ is equivalent to multiplying x with 2^y (2 raised to power y)
+
+                return str;
+}
+
 void Node::handleMessage(cMessage *msg)
 {
     // TODO - Generated method body
