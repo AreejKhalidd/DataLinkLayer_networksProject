@@ -16,11 +16,13 @@
 #include "node.h"
 #include "MyMessage_m.h"
 #include <stdlib.h> /* atoi */
+#include <iostream>
+#include <ostream>
 using namespace std;
 Define_Module(Node);
 
 // delete msg ???????????
-// check hwar el random number lw h3mel add seedset fl ini
+// (time delay) (random selected bit for modification )check hwar el random number lw h3mel add seedset fl ini
 
 void Node::initialize()
 {
@@ -142,7 +144,7 @@ string Node::calculateCRC(string M_Payload){
             binaryStr+='0';
         }
         //Division
-        string binaryStr="";
+       string binaryStr="";
             for (int i = 0; i < M_Payload.length(); i++)
             {
                     bitset<8> binaryBits(M_Payload[i]);
@@ -239,7 +241,14 @@ void Node::handleMessage(cMessage *msg)
     int type = mmsg->getM_Type();
     if(msg->isSelfMessage()) // self message to start send messages to receiver node
     {
-         EV <<" Self message to sender node to start sending messages at time = " << simTime() << endl;
+        double t = simTime().dbl();
+        const char* str=getName();
+        std::string s = str;
+        cout << "DDDDDDDDDDDDDD   " << getName() << endl;
+        //LOG FILE
+         EV <<" Self message to " << getName() <<" node to start/complete sending messages at time = " << simTime() << endl;
+        if( type == 4 )
+           EV << s + " : time out .. complete sending messages" <<endl;
          string error_msg = "";
          string error_msg_type = "";
          MyMessage_Base * msgg = new MyMessage_Base();
@@ -263,15 +272,23 @@ void Node::handleMessage(cMessage *msg)
          char delay_error = curr_error[3];
           if(loss_error == '1') //skip this message
           {
-              error_msg = "Sender drop message with id = " +  to_string(msg_seqno) ;
+              double t = simTime().dbl();
+              const char* str=getName();
+              std::string s = str;
+              error_msg = s + " : drop message with id = " +  to_string(msg_seqno) +
+                      " and content = " +msgg->getM_Payload() +
+                        "and piggy backing ACK ="+  to_string(0) +"at time = " +  to_string(t);
               cout << "loss msg" <<endl;
               out = 0;
               msg_seqno++;
+              //schedule new event to complete (Self message )
+              msgg->setM_Type(4);
+              scheduleAt(simTime()+0.03, msgg);
           }
           if(mod_error == '1')
           {
                cout << "modi msg " << endl;
-               error_msg_type = "Modification";
+               error_msg_type = error_msg_type + " Modification ";
                int index=uniform(0,1)*10;
                const char* str = msgg->getM_Payload();
                string s = str;
@@ -289,9 +306,14 @@ void Node::handleMessage(cMessage *msg)
           if(delay_error == '1')
           {
               cout << "delayed msg " << endl;
-              error_msg = "Sender will send msg with id = "+  to_string(msg_seqno) +
+              error_msg_type = error_msg_type + " with delay ";
+              double t = simTime().dbl();
+
+              const char* str=getName();
+              std::string s = str;
+              error_msg = s + ":  send msg with id = "+  to_string(msg_seqno) +
                                  " and content = " +msgg->getM_Payload() + "will be delayed" +
-                                 "and piggy backing ACK ="+  to_string(0) +"at time = " ;//+  to_string(simTime()) + "." ;
+                                 "and piggy backing ACK ="+  to_string(0) +"at time = " + to_string(t)  ;
 
               MyMessage_Base * msg_s = new MyMessage_Base();
               msg_s->setSeq_Num(msgg->getSeq_Num());
@@ -305,38 +327,45 @@ void Node::handleMessage(cMessage *msg)
           if(dup_error == '1')
           {
               cout << "dup msg " << endl;
-              error_msg_type = "will be duplicated";
+              error_msg_type = error_msg_type + " with Duplication ";
               MyMessage_Base * msg_s = new MyMessage_Base();
               msg_s->setSeq_Num(msgg->getSeq_Num());
               msg_s->setM_Type(msgg->getM_Type());
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
-
-              sendDelayed(msg_s,simTime() + 0.01,"out");
+EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
+              sendDelayed(msg_s, 0.01,"out");
               out = 2;
               //msg_seqno++;
           }
          if (out != 0 && out != 1) // not loss msg and not delayed msg
          {
-             error_msg = "Sender will send msg with id = "+  to_string(msg_seqno) +
-                     " and content = " +msgg->getM_Payload() + error_msg_type +
-                     "and piggy backing ACK = "+  to_string(0) +" at time = " ;//+ simTime() + "." ;
+             double t = simTime().dbl();
+
+             const char* str=getName();
+             std::string s = str;
+             error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
+                     " and content = " +msgg->getM_Payload()  +error_msg_type +
+                     "and piggy backing ACK = "+  to_string(0) +" at time = " + to_string(t) ;
              cout << "sending msg" <<endl;
              send(msgg,"out"); // dup w delay m3 b3d???
              msg_seqno++;
          }
-         EV <<"Sender node send new message with msg_seqnumber = " << msgg->getSeq_Num() << endl;
          // done send msg
-         EV << error_msg ;
+         EV << error_msg ; //LOG FILE
 
     }
     else if( type == 0  ) // message from coordinator to any node (Sender/receiver)
     {
         if(start != -1 ) // if node is sender then read file
         {
-            EV <<"Sender start reading from file" << endl;
+            EV <<"Sender start reading from file.." << endl;
             sender = true;
-            cout << "Sender Node start to read data from file" <<endl;
+
+            const char* str=getName();
+            std::string s = str;
+            // LOG FILE
+            EV << s + " : Node start to read data from file" <<endl;
             string file_name = "../inputsSamples/";
             cout << "File name from msg: " << mmsg->getM_Payload() <<endl;
             file_name = file_name + mmsg->getM_Payload();
@@ -360,7 +389,12 @@ void Node::handleMessage(cMessage *msg)
                  cout << " msg is : " << msg_input <<endl;
                  messages.push_back(msg_input);
              }
-             EV <<"Sender finished reading from file" << endl;
+             // LOG FILE
+
+             const char* str1=getName();
+             std::string s1 = str1;
+
+             EV << s1 + " : finished reading from file..." << endl;
              cout << "Sender node finish reading from file" <<endl;
              // Self message with start time
              MyMessage_Base * msg_s = new MyMessage_Base();
@@ -371,10 +405,14 @@ void Node::handleMessage(cMessage *msg)
              scheduleAt(start, msg_s);
 
         }
-        else // msg from coordintor to receiver
+        else // msg from coordinator to receiver
         {
             //receiver
-            EV <<"Receiver received msg from coordinator" << endl;
+            // LOG FILE
+
+            const char* str=getName();
+            std::string s = str;
+            EV << s + " : received msg from coordinator..." << endl;
             sender = false;
         }
 
@@ -384,7 +422,9 @@ void Node::handleMessage(cMessage *msg)
         string mymsg = mmsg->getM_Payload();
         // de-stuffing
         string final_msg = deStuffing(mymsg);
-        EV <<"Receiver received msg from the other node with payload after de stuffing = " << final_msg<< endl;
+        string error_msg = "";
+        EV <<"Receiver get msg from the other node with payload before de stuffing = " << mymsg << endl;
+        EV <<"Receiver get msg from the other node with payload after de stuffing = " << final_msg<< endl;
         cout << " Node received message and will send ACK or NACK"<<endl;
         //cout << " message before de-stuffing "<< mymsg <<endl;
         cout << " message received after de-stuffing "<< final_msg <<endl;
@@ -396,8 +436,33 @@ void Node::handleMessage(cMessage *msg)
         if(mmsg->getSeq_Num() < msg_ack )
         {
             err_typee = 3;
-            EV << "Receiver: received dup frame , discard frame , send same ACK = " << msg_ack <<endl;
-            cout << "Receiver : Dup frame .. discard frame .. send same ACK" <<endl;
+            //LOG FILE
+            double t = simTime().dbl();
+
+            const char* str=getName();
+            std::string s = str;
+
+            error_msg = s + " : drop  duplicated message with id = " + to_string(mmsg->getSeq_Num())
+                    + " at time = " + to_string(t);
+            cout << "Receiver Dup frame .. discard frame " <<endl;
+            // msh hn3ml haga hya kdakda duplicated message
+            //MyMessage_Base * msg1 = new MyMessage_Base(" ");
+            //msg1->setM_Type(err_typee);
+            //msg1->setpiggybackingID(msg_ack);
+            //sendDelayed(msg1,0.2,"out");//send(msg1,"out");
+        }
+        else if (mmsg->getSeq_Num() > msg_ack)
+        {
+            double t = simTime().dbl();
+            cout << "Receiver ..received frame( loss message occured) .. send new ACK" << endl;
+
+            const char* str=getName();
+            std::string s = str;
+            error_msg = s + " : received message (messaged lost before this message ) with id = " +  to_string(mmsg->getSeq_Num()) +
+                    " and content = " +mmsg->getM_Payload() +
+                      "and piggy backing ACK ="+  to_string(msg_ack) +"at time = "  + to_string(t);
+            msg_ack = mmsg->getSeq_Num();
+            msg_ack++;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
             msg1->setM_Type(err_typee);
             msg1->setpiggybackingID(msg_ack);
@@ -405,18 +470,23 @@ void Node::handleMessage(cMessage *msg)
         }
         else
         {
-            msg_ack++;
+
+            const char* str=getName();
+            std::string s = str;
+            double t = simTime().dbl();
             cout << "Receiver ..received frame .. send new ACK" << endl;
-            EV << "Receiver get new frame , will send new ACK = " << msg_ack <<endl;
+            error_msg = s + " : received message with id = " +  to_string(mmsg->getSeq_Num()) +
+                    " and content = " + mmsg->getM_Payload() +
+                      "  and piggy backing ACK ="+  to_string(msg_ack) +"at time = " + to_string(t) ;
+
+            msg_ack++;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
             msg1->setM_Type(err_typee);
             msg1->setpiggybackingID(msg_ack);
             sendDelayed(msg1,0.2,"out");//send(msg1,"out");
         }
 
-        string error_msg = "Receiver : received message with id = " + to_string( mmsg->getSeq_Num()) +
-                " with content = " +  mmsg->getM_Payload() +
-                " Piggy backing ACK  = " +  to_string(msg_ack-1) +" at time = " + "."; //+ simTime() +
+        // LOG FILE  //+ simTime() +
         EV << error_msg <<endl;
     }
     else if (type == 2 || type == 3)
@@ -425,28 +495,36 @@ void Node::handleMessage(cMessage *msg)
         // ACK OR NACK = true
         string error_msg = "";
         string error_msg_type = "";
+        double t = simTime().dbl();
         cout << "Sender: Received ACK/NACK from receiver = " << mmsg->getpiggybackingID()  <<endl;
-        if (mmsg->getpiggybackingID() < msg_seqno)
-        {
-            //discard ACK
-            EV << "Sender : get dup ACK , discard send new frame with seq = " << msg_seqno <<endl;
-            cout << "Sender:Delayed or dup ACK .. dicard ACK .. send new frame " <<endl;
-        }
-        else
-        {
-            EV << "Sender : get new ack , send new msg with seq = " << msg_seqno << endl;
+//        if (mmsg->getpiggybackingID() < msg_seqno)
+//        {
+//            //discard ACK
+//            EV << "Sender : get dup ACK , discard send new frame with seq = " << msg_seqno <<endl;
+//            cout << "Sender:Delayed or dup ACK .. dicard ACK .. send new frame " <<endl;
+//        }
+//        else
+       // {
+            EV << "Sender : get new ACK , send new msg with seq = " << msg_seqno << endl;
             cout << "Sender:will send new frame" <<endl;
-        }
+        //}
         if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
         {
             cout << "Sender finish sending messages.." <<endl;
-            EV << "Sender finish sending frames" <<endl;
+            // LOG FILE
+
+            const char* str=getName();
+            std::string s = str;
+
+            EV << s +  " : finish sending frames at time = " + to_string(t) <<endl;
         }
         MyMessage_Base * msgg = new MyMessage_Base();
                  msgg->setM_Type(1);
                  msgg->setSeq_Num(msg_seqno);
                  //byte stuffing
                  msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
+                 msgg->setpiggybackingID(mmsg->getpiggybackingID());
+
                  string curr_error = errors[msg_seqno];
                  // Errors
                  //int check = checkErrorsType();
@@ -463,16 +541,24 @@ void Node::handleMessage(cMessage *msg)
                  char delay_error = curr_error[3];
                   if(loss_error == '1') //skip this message
                   {
+                      double t = simTime().dbl();
                       cout << "loss msg" <<endl;
                       EV << "Sender: Message will be loss " <<endl;
-                      error_msg = "Sender drop message with id = " +  to_string(msg_seqno) ;
+
+                      const char* str=getName();
+                      std::string s = str;
+                      error_msg =  s + " : drop message with id = " +  to_string(msg_seqno) +
+                              " and content = " +mmsg->getM_Payload() +
+                                "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +"at time = " + to_string(t);
                       out = 0;
                       msg_seqno++;
+                      msgg->setM_Type(4);
+                      scheduleAt(simTime()+0.03, msgg);
                   }
                   if(mod_error == '1')
                   {
                        cout << "modi msg " << endl;
-                       error_msg_type = "Modification";
+                       error_msg_type =error_msg_type + " Modification ";
                        EV << "Sender : msg will de modified" <<endl;
                        int index=uniform(0,1)*10;
                        const char* str = msgg->getM_Payload();
@@ -489,34 +575,39 @@ void Node::handleMessage(cMessage *msg)
                   }
                   if(delay_error == '1')
                   {
-                      EV <<"Sender: Message will be delayed" <<endl;
                       cout << "delayed msg " << endl;
+                      error_msg_type = error_msg_type + " with delay ";
+                      double t = simTime().dbl();
 
-                      error_msg = "Sender will send msg with id = "+ to_string( msg_seqno) +
+                      const char* str=getName();
+                      std::string s = str;
+                      error_msg = s + "  : send msg with id = "+ to_string( msg_seqno) + error_msg_type   +
                                          " and content = " +msgg->getM_Payload() + " will be delayed" +
-                                         " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " ;//+ simTime() + "." ;
+                                         " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
                       sendDelayed(msgg,0.2,"out"); // delay in second from ini file
                       msg_seqno++;
                       out = 1;
                   }
                   if(dup_error == '1')
                   {
-                      EV << "Sender: Message will be duplicated" << endl;
-                      cout << "dup msg " << endl;
-
-                      error_msg_type = " will be duplicated ";
-                      sendDelayed(msgg,simTime() + 0.01,"out");
+                      error_msg_type = error_msg_type + "  with Duplication  ";
+                      sendDelayed(msgg, 0.01,"out");
                       out = 2;
                       //msg_seqno++;
                   }
                  if (out != 0 && out != 1) // not loss msg and not delayed msg
                  {
-                     error_msg = " Sender will send msg with id = "+  to_string(msg_seqno) +
-                                        " and content = " +msgg->getM_Payload() + error_msg_type +
-                                        " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " ;//-++  to_string(simTime()) + "." ;
+                     //int t = omnetpp::SimTime();
+                     double t = simTime().dbl();
+
+                     const char* str=getName();
+                     std::string s = str;
+
+                     error_msg =  s + " : will send msg with id = "+  to_string(msg_seqno) +
+                                        " and content = " + msgg->getM_Payload()+ "  " + error_msg_type +
+                                        " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
 
                      cout << "sending msg" <<endl;
-                     EV << "Sender will send msg" << endl;
                      send(msgg,"out"); // dup w delay m3 b3d???
                      msg_seqno++;
                  }
