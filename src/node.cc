@@ -112,6 +112,9 @@ string Node:: deStuffing(string mymsg)
 //
 //     return out;
 //}
+
+
+
 string XORString(string a, string b)
 {
     string str="";
@@ -142,7 +145,7 @@ string Node::calculateCRC(string M_Payload){
             binaryStr+='0';
         }
         //Division
-        string binaryStr="";
+        //string binaryStr="";
             for (int i = 0; i < M_Payload.length(); i++)
             {
                     bitset<8> binaryBits(M_Payload[i]);
@@ -224,7 +227,7 @@ string Node::calculateCRC(string M_Payload){
                 if(str=="")
                     str="0";
 
-                cout<<stoi(str);
+
 
         //‘(x<<y)’ is equivalent to multiplying x with 2^y (2 raised to power y)
 
@@ -247,6 +250,14 @@ void Node::handleMessage(cMessage *msg)
          msgg->setSeq_Num(msg_seqno);
          //byte stuffing
          msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
+         // The CRC byte is added to the message trailer field
+         string CRCStr=calculateCRC(msgg->getM_Payload());
+         cout<<"CRC Bits: "<<CRCStr<<endl;
+         EV<<"CRC Bits: "<<CRCStr<<endl;
+         bits CRCbits(CRCStr);
+         //cout<<CRCbits<<endl;
+         msgg->setMycheckbits(CRCbits);
+         EV<<msgg->getM_Payload()<<endl;
          string curr_error = errors[msg_seqno];
          // Errors
          //int check = checkErrorsType();
@@ -368,6 +379,12 @@ void Node::handleMessage(cMessage *msg)
              msg_s->setM_Type(type);
              msg_s->setM_Payload("Start sending..");
              EV <<"Sender schedule self message" << endl;
+             string CRCStr=calculateCRC(msg_s->getM_Payload());
+             cout<<"CRC Bits: "<<CRCStr<<endl;
+             EV<<"CRC Bits: "<<CRCStr<<endl;
+             bits CRCbits(CRCStr);
+             //cout<<CRCbits<<endl;
+             msg_s->setMycheckbits(CRCbits);
              scheduleAt(start, msg_s);
 
         }
@@ -382,21 +399,33 @@ void Node::handleMessage(cMessage *msg)
     else if( type == 1  )// receiver receive data message from the other node
     {
         string mymsg = mmsg->getM_Payload();
+
+        // Detect errors
+        // send ACK
+        int err_typee;
+        string CRCStr=calculateCRC(mmsg->getM_Payload());
+        cout<<"CRC Bits: "<<CRCStr<<endl;
+        EV<<"CRC Bits: "<<CRCStr<<endl;
+        bits CRCbits(CRCStr);
+
+        bits sent=mmsg->getMycheckbits();
+        if(sent==CRCbits)
+            err_typee=2;// ACK no error
+        else
+            err_typee=3;// NACK error
         // de-stuffing
         string final_msg = deStuffing(mymsg);
         EV <<"Receiver received msg from the other node with payload after de stuffing = " << final_msg<< endl;
         cout << " Node received message and will send ACK or NACK"<<endl;
         //cout << " message before de-stuffing "<< mymsg <<endl;
         cout << " message received after de-stuffing "<< final_msg <<endl;
-        // Detect errors
-        // send ACK
-        int err_typee = 2; // ACK no error
+
 
 
         if(mmsg->getSeq_Num() < msg_ack )
         {
             err_typee = 3;
-            EV << "Receiver: received dup frame , discard frame , send same ACK = " << msg_ack <<endl;
+            EV << "Receiver: received dup frame , discard frame , send same ACK = " << msg_ack <<endl;//msh fahma
             cout << "Receiver : Dup frame .. discard frame .. send same ACK" <<endl;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
             msg1->setM_Type(err_typee);
@@ -447,6 +476,14 @@ void Node::handleMessage(cMessage *msg)
                  msgg->setSeq_Num(msg_seqno);
                  //byte stuffing
                  msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
+                 EV<<"AAAAAAAAAAAA"<<endl;
+                 EV<<msgg->getM_Payload()<<endl;
+                 string CRCStr=calculateCRC(msgg->getM_Payload());
+                 cout<<"CRC Bits: "<<CRCStr<<endl;
+                 EV<<"CRC Bits: "<<CRCStr<<endl;
+                 bits CRCbits(CRCStr);
+                 //cout<<CRCbits<<endl;
+                 msgg->setMycheckbits(CRCbits);
                  string curr_error = errors[msg_seqno];
                  // Errors
                  //int check = checkErrorsType();
