@@ -139,12 +139,12 @@ string Node::calculateCRC(string M_Payload){
                 binaryStr+=binaryBits.to_string();
         }
         //append zeros at last of string
-        for(int i=0;i<generator.length();i++)
+        for(int i=0;i<binaryStr.length();i++)
         {
             binaryStr+='0';
         }
         //Division
-       string binaryStr="";
+       //string binaryStr="";
             for (int i = 0; i < M_Payload.length(); i++)
             {
                     bitset<8> binaryBits(M_Payload[i]);

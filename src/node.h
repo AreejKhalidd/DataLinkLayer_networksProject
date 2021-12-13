@@ -46,7 +46,7 @@ class Node : public cSimpleModule
     vector <string> errors;
     int msg_seqno = 0;
     int msg_ack = 0;
-    ///////*******CRC Error Detection******\\\\\\\\
+    //CRC Error Detection
     const string generator="1001";
     virtual string calculateCRC(string M_Payload);
 };
