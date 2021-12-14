@@ -224,10 +224,10 @@ void Node::handleMessage(cMessage *msg)
              EV << s0 <<endl;
              addtoLogFile(s0,"pair01");
              addtoLogFile("-----------------------","pair01");
-             int total_time =  simTime().dbl() - start_time;
+             //int total_time =  simTime().dbl() - start_time;
              addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
              addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
-             int tp = numb_correctmsgs / total_time;
+             //int tp = numb_correctmsgs / total_time;
              addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
              //HENAAAA
 
@@ -619,6 +619,14 @@ num_transmissions++;
                 string s0= s +  " : finish sending frames at time = " + to_string(t);
                 EV << s0 <<endl;
                 addtoLogFile(s0,"pair01");
+                addtoLogFile("-----------------------","pair01");
+                //int total_time =  simTime().dbl() - start_time;
+                addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
+                addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
+                //int tp = numb_correctmsgs / total_time;
+                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
+                //HENAAAA
+                return;
             }
         }
         else
@@ -633,10 +641,10 @@ num_transmissions++;
                 EV << s0 <<endl;
                 addtoLogFile(s0,"pair01");
                 addtoLogFile("-----------------------","pair01");
-                int total_time =  simTime().dbl() - start_time;
+                //int total_time =  simTime().dbl() - start_time;
                 addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
                 addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
-                int tp = numb_correctmsgs / total_time;
+                //int tp = numb_correctmsgs / total_time;
                 addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
                 //HENAAAA
 
