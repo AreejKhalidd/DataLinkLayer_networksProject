@@ -1,0 +1,32 @@
+node0 :  start to reading data from file
+node0 : finished reading from file...
+node1 : received msg from coordinator...
+node0 : received self message to start/complete sending messages at time = 3.000000
+node0 : will send msg with id = 0 and content = $A fltwer, sometimes known as a bloom or blossom$ Modification  with Duplication and piggy backing ACK = 0 at time = 3.000000
+node1 : received message with id = 0 and content = $A fltwer, sometimes known as a bloom or blossom$  with Modification and NACK = 3  and piggy backing ACK =0 at time = 3.000000
+node1 : drop  duplicated message with id = 0 with content = $A fltwer, sometimes known as a bloom or blossom$
+node0 : received NACK = 3 at time = 3.200000
+node0 : will send msg with id = 1 and content = $is the reproductive/$ structure found in flowering plants$   and piggy backing ACK =1 at time = 3.200000.
+node1 : received message with id = 1 and content = $is the reproductive/$ structure found in flowering plants$ACK = 2   and piggy backing ACK =1 at time = 3.200000
+node0 : get dup ACK , with piggybacking id =  1 at time = 3.210000
+node0 : received ACK = 2 at time = 3.400000
+node0 : drop message with id = 2 and content = $(plants of the division Magnoliophyta, also called// angiosperms/$).$and piggy backing ACK =2 at time = 3.400000
+node0 : received self message to start/complete sending messages at time = 3.800000
+node0 : time out .. complete sending messages
+node0 : will send msg with id = 3 and content = $The biological function of a flower is to facilitate reproduction,$and piggy backing ACK = 2 at time = 3.800000
+node1 : received message (messaged lost before this message ) with id = 3 and content = $The biological function of a flower is to facilitate reproduction,$ACK = 2 and piggy backing ACK =2 at time = 3.800000
+node0 : received ACK = 2 at time = 4.000000
+node0  : send msg with id = 4 with delay  and content = $usually by providing a mechanism for the union of sperm with eggs.$ will be delayed and piggy backing ACK =4 at time = 4.000000.
+node1 : received message with id = 4 and content = $usually by providing a mechanism for the union of sperm with eggs.$ACK = 2   and piggy backing ACK =4 at time = 7.000000
+node0 : received ACK = 2 at time = 7.200000
+node0 : will send msg with id = 5 and content = $Flowers may facilitate outcrossing/$$   and piggy backing ACK =5 at time = 7.200000.
+node1 : received message with id = 5 and content = $Flowers may facilitate outcrossing/$$ACK = 2   and piggy backing ACK =5 at time = 7.200000
+node0 : received ACK = 2 at time = 7.400000
+node0 : will send msg with id = 6 and content = $(fusion of sperm and eggs from different individuals in a population)$   and piggy backing ACK =6 at time = 7.400000.
+node1 : received message with id = 6 and content = $(fusion of sperm and eggs from different individuals in a population)$ACK = 2   and piggy backing ACK =6 at time = 7.400000
+node0 : received ACK = 2 at time = 7.600000
+node0 : finish sending frames at time = 7.600000
+-----------------------
+total transmission time = 4.600000
+total number of transmissions  = 8
+throughput of network = 1.086957

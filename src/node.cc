@@ -260,6 +260,7 @@ void Node::handleMessage(cMessage *msg)
               msgg->setM_Type(4);
              //msgg->piggybackingID(mmsg->piggybackingID());
               scheduleAt(simTime()+0.4, msgg);
+              num_transmissions++;
           }
           if(mod_error == '1')
           {
@@ -303,6 +304,7 @@ void Node::handleMessage(cMessage *msg)
 
               sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
               msg_seqno++;
+              num_transmissions++;
               out = 1;
           }
           if(dup_error == '1')
@@ -314,7 +316,10 @@ void Node::handleMessage(cMessage *msg)
               msg_s->setM_Type(msgg->getM_Type());
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
+              bits CRCbits(calculateCRC(msgg->getM_Payload()));
+              msg_s->setMycheckbits(CRCbits);
 EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
+num_transmissions++;
               sendDelayed(msg_s, 0.01,"out");
               out = 2;
               //msg_seqno++;
@@ -330,6 +335,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
                      "and piggy backing ACK = "+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) ;
              addtoLogFile(error_msg,"pair01");
              send(msgg,"out"); // dup w delay m3 b3d???
+             num_transmissions++;
              msg_seqno++;
          }
          // done send msg
@@ -392,6 +398,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
              msg_s->setMycheckbits(CRCbits);
              EV <<"Sender schedule self message" << endl;
              scheduleAt(start, msg_s);
+             start_time = start;
 
         }
         else // msg from coordinator to receiver
@@ -515,6 +522,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
            string ss=
                s +  " : received ACK = " + to_string(type) + " at time = " + to_string(t) ;
            EV << ss;
+           numb_correctmsgs++;
            addtoLogFile(ss,"pair01");
         }
         else if ( type == 3)
@@ -544,6 +552,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
         }
         else
         {
+            /// add fl self msg
                 cout << "Sender:will send new frame" <<endl;
             if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
             {
@@ -552,6 +561,15 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
                 string s0= s +  " : finish sending frames at time = " + to_string(t);
                 EV << s0 <<endl;
                 addtoLogFile(s0,"pair01");
+                addtoLogFile("-----------------------","pair01");
+                int total_time =  simTime().dbl() - start_time;
+                addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
+                addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
+                int tp = numb_correctmsgs / total_time;
+                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / (simTime().dbl() - start_time)),"pair01");
+                //HENAAAA
+
+                return;
             }
 
             MyMessage_Base * msgg = new MyMessage_Base();
@@ -600,6 +618,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
                           msg_seqno++;
                           msgg->setM_Type(4);
                           scheduleAt(simTime()+0.4, msgg);
+                          num_transmissions++;
                       }
                       if(mod_error == '1')
                       {
@@ -630,15 +649,36 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
                           error_msg = s + "  : send msg with id = "+ to_string( msg_seqno) + error_msg_type   +
                                              " and content = " +msgg->getM_Payload() + " will be delayed" +
                                              " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
+
+                          MyMessage_Base * msg_s = new MyMessage_Base();
+                          msg_s->setSeq_Num(msgg->getSeq_Num());
+                          msg_s->setM_Type(msgg->getM_Type());
+                          msg_s->setM_Payload( msgg->getM_Payload());
+                          msg_s->setpiggybackingID( msgg->getpiggybackingID());
+                          // The CRC byte is added to the message trailer field
+                          bits CRCbits(calculateCRC(msgg->getM_Payload()));
+
+                          msg_s->setMycheckbits(CRCbits);
+
                           addtoLogFile(error_msg,"pair01");
-                          sendDelayed(msgg,delayy,"out"); // delay in second from ini file
+                          sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
                           msg_seqno++;
+                          num_transmissions++;
                           out = 1;
                       }
                       if(dup_error == '1')
                       {
                           error_msg_type = error_msg_type + "  with Duplication  ";
-                          sendDelayed(msgg, 0.01,"out");
+                          MyMessage_Base * msg_s = new MyMessage_Base();
+                          msg_s->setSeq_Num(msgg->getSeq_Num());
+                          msg_s->setM_Type(msgg->getM_Type());
+                          msg_s->setM_Payload( msgg->getM_Payload());
+                          msg_s->setpiggybackingID( msgg->getpiggybackingID());
+
+                          bits CRCbits(calculateCRC(msgg->getM_Payload()));
+                          msg_s->setMycheckbits(CRCbits);
+                          num_transmissions++;
+                          sendDelayed(msg_s, 0.01,"out");
                           out = 2;
                           //msg_seqno++;
                       }
@@ -657,6 +697,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
                          addtoLogFile(error_msg,"pair01");
                          cout << "sending msg" <<endl;
                          send(msgg,"out"); // dup w delay m3 b3d???
+                         num_transmissions++;
                          msg_seqno++;
                      }
 
