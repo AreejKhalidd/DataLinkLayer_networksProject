@@ -63,10 +63,10 @@ typedef  std::bitset<8> bits;
 class MyMessage_Base : public ::omnetpp::cPacket
 {
   protected:
-    int piggybackingID; // ACk id
+    int piggybackingID=0; // ACk id
     int Seq_Num; // if from coordinator -> seq = -1 receiver else sender with start = seq number
     int M_Type; // if type == 0 from coordinator // if type == 1 (Data) sender to receiver node
-    // if type == 2 or 3(dup frame) receiver to sender with ack
+    // if type == 2 or 3(dup frame) or 5 (dupl) receiver to sender with ack
     ::omnetpp::opp_string M_Payload;
     bits mycheckbits;
 

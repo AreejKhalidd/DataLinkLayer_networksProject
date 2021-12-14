@@ -27,8 +27,14 @@ Define_Module(Node);
 void Node::initialize()
 {
     // TODO - Generated method body
-}
 
+}
+void Node::addtoLogFile(string msg,string fname){
+    ofstream f;
+    f.open ("../outputs/pair01.txt",std::ios_base::app);
+    f << msg+"\n";
+    f.close();
+}
 string Node:: byteStuffing (string msg_input)
 {
      string final_payload = "$" ; // first flag byte
@@ -200,9 +206,15 @@ void Node::handleMessage(cMessage *msg)
         std::string s = str;
         cout << "DDDDDDDDDDDDDD   " << getName() << endl;
         //LOG FILE
-         EV <<" Self message to " << getName() <<" node to start/complete sending messages at time = " << simTime() << endl;
-        if( type == 4 )
-           EV << s + " : time out .. complete sending messages" <<endl;
+        string m =  s +" : received self message to start/complete sending messages at time = " + to_string(t) ;
+        EV << m <<endl;
+        addtoLogFile(m,"pair01");
+         if( type == 4 )
+         {
+             string m2 = s + " : time out .. complete sending messages";
+             EV << m2 <<endl;
+             addtoLogFile(m2,"pair01");
+         }
          string error_msg = "";
          string error_msg_type = "";
          MyMessage_Base * msgg = new MyMessage_Base();
@@ -238,14 +250,16 @@ void Node::handleMessage(cMessage *msg)
               const char* str=getName();
               std::string s = str;
               error_msg = s + " : drop message with id = " +  to_string(msg_seqno) +
-                      " and content = " +msgg->getM_Payload() +
-                        "and piggy backing ACK ="+  to_string(0) +"at time = " +  to_string(t);
+                      " and content = " +  msgg->getM_Payload() +
+                        "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " +  to_string(t);
               cout << "loss msg" <<endl;
+              addtoLogFile(error_msg,"pair01");
               out = 0;
               msg_seqno++;
               //schedule new event to complete (Self message )
               msgg->setM_Type(4);
-              scheduleAt(simTime()+0.03, msgg);
+             //msgg->piggybackingID(mmsg->piggybackingID());
+              scheduleAt(simTime()+0.4, msgg);
           }
           if(mod_error == '1')
           {
@@ -275,8 +289,8 @@ void Node::handleMessage(cMessage *msg)
               std::string s = str;
               error_msg = s + ":  send msg with id = "+  to_string(msg_seqno) +
                                  " and content = " +msgg->getM_Payload() + "will be delayed" +
-                                 "and piggy backing ACK ="+  to_string(0) +"at time = " + to_string(t)  ;
-
+                                 "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t)  ;
+              addtoLogFile(error_msg,"pair01");
               MyMessage_Base * msg_s = new MyMessage_Base();
               msg_s->setSeq_Num(msgg->getSeq_Num());
               msg_s->setM_Type(msgg->getM_Type());
@@ -301,7 +315,7 @@ void Node::handleMessage(cMessage *msg)
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
 EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
-              sendDelayed(msg_s, delayy,"out");
+              sendDelayed(msg_s, 0.01,"out");
               out = 2;
               //msg_seqno++;
           }
@@ -313,8 +327,8 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
              std::string s = str;
              error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
                      " and content = " +msgg->getM_Payload()  +error_msg_type +
-                     "and piggy backing ACK = "+  to_string(0) +" at time = " + to_string(t) ;
-             cout << "sending msg" <<endl;
+                     "and piggy backing ACK = "+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) ;
+             addtoLogFile(error_msg,"pair01");
              send(msgg,"out"); // dup w delay m3 b3d???
              msg_seqno++;
          }
@@ -332,7 +346,9 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
             const char* str=getName();
             std::string s = str;
             // LOG FILE
-            EV << s + " : Node start to read data from file" <<endl;
+            string m3 = s + " :  start to reading data from file";
+            EV << m3 <<endl;
+            addtoLogFile(m3,"pair01");
             string file_name = "../inputsSamples/";
             cout << "File name from msg: " << mmsg->getM_Payload() <<endl;
             file_name = file_name + mmsg->getM_Payload();
@@ -360,8 +376,9 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
 
              const char* str1=getName();
              std::string s1 = str1;
-
-             EV << s1 + " : finished reading from file..." << endl;
+             string m4 = s1 + " : finished reading from file...";
+             EV << m4 << endl;
+             addtoLogFile(m4,"pair01");
              cout << "Sender node finish reading from file" <<endl;
              // Self message with start time
              MyMessage_Base * msg_s = new MyMessage_Base();
@@ -384,7 +401,9 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
 
             const char* str=getName();
             std::string s = str;
-            EV << s + " : received msg from coordinator..." << endl;
+            string m4 = s + " : received msg from coordinator...";
+            EV << m4 << endl;
+            addtoLogFile(m4,"pair01");
             sender = false;
         }
 
@@ -396,13 +415,20 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
         cout<<"CRC Bits: "<<CRCStr<<endl;
         EV<<"CRC Bits: "<<CRCStr<<endl;
         bits CRCbits(CRCStr);
-
+        string errordetection = "";
         bits sent=mmsg->getMycheckbits();
         int err_typee;
                 if(sent==CRCbits)
+                {
                     err_typee=2;// ACK no error
+                    errordetection = errordetection + "ACK = 2 ";
+                }
                 else
+                {
                     err_typee=3;// NACK error
+                    errordetection = errordetection + "  with Modification and NACK = 3";
+                }
+
         // de-stuffing
         string final_msg = deStuffing(mymsg);
         string error_msg = "";
@@ -417,21 +443,23 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
 
         if(mmsg->getSeq_Num() < msg_ack )
         {
-            err_typee = 3;
+            err_typee = 5;
             //LOG FILE
             double t = simTime().dbl();
 
             const char* str=getName();
             std::string s = str;
 
-            error_msg = s + " : drop  duplicated message with id = " + to_string(mmsg->getSeq_Num())
+            error_msg = s + " : drop  duplicated message with id = " +to_string(mmsg->getSeq_Num()) +" with content = "+ mymsg ;
                     + " at time = " + to_string(t);
+
+
             cout << "Receiver Dup frame .. discard frame " <<endl;
             // msh hn3ml haga hya kdakda duplicated message
-            //MyMessage_Base * msg1 = new MyMessage_Base(" ");
-            //msg1->setM_Type(err_typee);
-            //msg1->setpiggybackingID(msg_ack);
-            //sendDelayed(msg1,0.2,"out");//send(msg1,"out");
+            MyMessage_Base * msg1 = new MyMessage_Base(" ");
+            msg1->setM_Type(err_typee);
+            msg1->setpiggybackingID(msg_ack);
+            sendDelayed(msg1,0.2,"out");//send(msg1,"out");
         }
         else if (mmsg->getSeq_Num() > msg_ack)
         {
@@ -441,8 +469,8 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
             const char* str=getName();
             std::string s = str;
             error_msg = s + " : received message (messaged lost before this message ) with id = " +  to_string(mmsg->getSeq_Num()) +
-                    " and content = " +mmsg->getM_Payload() +
-                      "and piggy backing ACK ="+  to_string(msg_ack) +"at time = "  + to_string(t);
+                    " and content = " +mmsg->getM_Payload()   + errordetection +
+                      "and piggy backing ACK ="+  to_string(msg_ack) +" at time = "  + to_string(t);
             msg_ack = mmsg->getSeq_Num();
             msg_ack++;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
@@ -458,8 +486,8 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
             double t = simTime().dbl();
             cout << "Receiver ..received frame .. send new ACK" << endl;
             error_msg = s + " : received message with id = " +  to_string(mmsg->getSeq_Num()) +
-                    " and content = " + mmsg->getM_Payload() +
-                      "  and piggy backing ACK ="+  to_string(msg_ack) +"at time = " + to_string(t) ;
+                    " and content = " + mmsg->getM_Payload() + errordetection +
+                      "  and piggy backing ACK ="+  to_string(msg_ack) +" at time = " + to_string(t) ;
 
             msg_ack++;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
@@ -470,142 +498,172 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
 
         // LOG FILE  //+ simTime() +
         EV << error_msg <<endl;
+        addtoLogFile(error_msg,"pair01");
     }
-    else if (type == 2 || type == 3)
+    else if (type == 2 || type == 3 || type == 5)
     {
         // ACK or NACK from receiver to sender
         // ACK OR NACK = true
         string error_msg = "";
         string error_msg_type = "";
         double t = simTime().dbl();
+        const char* str=getName();
+        std::string s = str;
         cout << "Sender: Received ACK/NACK from receiver = " << mmsg->getpiggybackingID()  <<endl;
-//        if (mmsg->getpiggybackingID() < msg_seqno)
-//        {
-//            //discard ACK
-//            EV << "Sender : get dup ACK , discard send new frame with seq = " << msg_seqno <<endl;
-//            cout << "Sender:Delayed or dup ACK .. dicard ACK .. send new frame " <<endl;
-//        }
-//        else
-       // {
-            EV << "Sender : get new ACK , send new msg with seq = " << msg_seqno << endl;
-            cout << "Sender:will send new frame" <<endl;
-        //}
-        if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
+        if(type == 2)
         {
-            cout << "Sender finish sending messages.." <<endl;
-            // LOG FILE
-
-            const char* str=getName();
-            std::string s = str;
-
-            EV << s +  " : finish sending frames at time = " + to_string(t) <<endl;
+           string ss=
+               s +  " : received ACK = " + to_string(type) + " at time = " + to_string(t) ;
+           EV << ss;
+           addtoLogFile(ss,"pair01");
         }
-        MyMessage_Base * msgg = new MyMessage_Base();
-                 msgg->setM_Type(1);
-                 msgg->setSeq_Num(msg_seqno);
-                 //byte stuffing
-                 msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
+        else if ( type == 3)
+        {
+            //sender receive nack
+            string ss=
+                s +  " : received NACK = " + to_string(type) + " at time = " + to_string(t);
+            EV << ss;
+            addtoLogFile(ss,"pair01");
+        }
 
-                 EV<<msgg->getM_Payload()<<endl;
-                                  string CRCStr=calculateCRC(msgg->getM_Payload());
-                                  cout<<"CRC Bits: "<<CRCStr<<endl;
-                                  EV<<"CRC Bits: "<<CRCStr<<endl;
-                                  bits CRCbits(CRCStr);
-                                  //cout<<CRCbits<<endl;
-                                  msgg->setMycheckbits(CRCbits);
+        if (mmsg->getpiggybackingID() < msg_seqno)
+        {
+            //discard ACK
+            string s2 = s + " : get dup ACK , with piggybacking id =  " + to_string(mmsg->getpiggybackingID())  + " at time = " +  to_string(t);
+            EV <<   s2 <<endl;
+            addtoLogFile(s2,"pair01");
+            cout << "Sender:Delayed or dup ACK .. dicard ACK .. send new frame " <<endl;
+            if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
+            {
+                cout << "Sender finish sending messages.." <<endl;
+                // LOG FILE
+                string s0= s +  " : finish sending frames at time = " + to_string(t);
+                EV << s0 <<endl;
+                addtoLogFile(s0,"pair01");
+            }
+        }
+        else
+        {
+                cout << "Sender:will send new frame" <<endl;
+            if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
+            {
+                cout << "Sender finish sending messages.." <<endl;
+                // LOG FILE
+                string s0= s +  " : finish sending frames at time = " + to_string(t);
+                EV << s0 <<endl;
+                addtoLogFile(s0,"pair01");
+            }
 
-                 msgg->setpiggybackingID(mmsg->getpiggybackingID());
+            MyMessage_Base * msgg = new MyMessage_Base();
+                     msgg->setM_Type(1);
+                     msgg->setSeq_Num(msg_seqno);
+                     //byte stuffing
+                     msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
 
-                 string curr_error = errors[msg_seqno];
-                 // Errors
-                 //int check = checkErrorsType();
-                 int out = -1;
-                 //out = 0 -> loss
-                 // out = 1 -> delayed
-                 // out = 2 -> dup
-                 /// out = 3 -> dup w delay
-                 cout << "ERROR IS :" << curr_error <<endl;
-                 // curr_error = 1101
-                 char mod_error = curr_error[0];
-                 char loss_error = curr_error[1];
-                 char dup_error = curr_error[2];
-                 char delay_error = curr_error[3];
-                  if(loss_error == '1') //skip this message
-                  {
-                      double t = simTime().dbl();
-                      cout << "loss msg" <<endl;
-                      EV << "Sender: Message will be loss " <<endl;
+                     EV<<msgg->getM_Payload()<<endl;
+                                      string CRCStr=calculateCRC(msgg->getM_Payload());
+                                      cout<<"CRC Bits: "<<CRCStr<<endl;
+                                      EV<<"CRC Bits: "<<CRCStr<<endl;
+                                      bits CRCbits(CRCStr);
+                                      //cout<<CRCbits<<endl;
+                                      msgg->setMycheckbits(CRCbits);
 
-                      const char* str=getName();
-                      std::string s = str;
-                      error_msg =  s + " : drop message with id = " +  to_string(msg_seqno) +
-                              " and content = " +mmsg->getM_Payload() +
-                                "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +"at time = " + to_string(t);
-                      out = 0;
-                      msg_seqno++;
-                      msgg->setM_Type(4);
-                      scheduleAt(simTime()+0.03, msgg);
-                  }
-                  if(mod_error == '1')
-                  {
-                       cout << "modi msg " << endl;
-                       error_msg_type =error_msg_type + " Modification ";
-                       EV << "Sender : msg will de modified" <<endl;
-                       int index=uniform(0,1)*10;
-                       const char* str = msgg->getM_Payload();
-                       string s = str;
-                       int size = s.size();
-                       while (index > size-1)
-                       {
-                           index=uniform(0,1)*10;
-                       }
-                       string mypayload= msgg->getM_Payload();
-                       mypayload[index]=mypayload[index]+5;
-                       msgg->setM_Payload(mypayload.c_str());
-                       cout << "msg after modi " << msgg->getM_Payload() <<endl;
-                  }
-                  if(delay_error == '1')
-                  {
-                      cout << "delayed msg " << endl;
-                      error_msg_type = error_msg_type + " with delay ";
-                      double t = simTime().dbl();
+                     msgg->setpiggybackingID(mmsg->getpiggybackingID());
 
-                      const char* str=getName();
-                      std::string s = str;
-                      error_msg = s + "  : send msg with id = "+ to_string( msg_seqno) + error_msg_type   +
-                                         " and content = " +msgg->getM_Payload() + " will be delayed" +
-                                         " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
-                      sendDelayed(msgg,0.2,"out"); // delay in second from ini file
-                      msg_seqno++;
-                      out = 1;
-                  }
-                  if(dup_error == '1')
-                  {
-                      error_msg_type = error_msg_type + "  with Duplication  ";
-                      sendDelayed(msgg, 0.01,"out");
-                      out = 2;
-                      //msg_seqno++;
-                  }
-                 if (out != 0 && out != 1) // not loss msg and not delayed msg
-                 {
-                     //int t = omnetpp::SimTime();
-                     double t = simTime().dbl();
+                     string curr_error = errors[msg_seqno];
+                     // Errors
+                     //int check = checkErrorsType();
+                     int out = -1;
+                     //out = 0 -> loss
+                     // out = 1 -> delayed
+                     // out = 2 -> dup
+                     /// out = 3 -> dup w delay
+                     cout << "ERROR IS :" << curr_error <<endl;
+                     // curr_error = 1101
+                     char mod_error = curr_error[0];
+                     char loss_error = curr_error[1];
+                     char dup_error = curr_error[2];
+                     char delay_error = curr_error[3];
+                      if(loss_error == '1') //skip this message
+                      {
+                          double t = simTime().dbl();
+                          cout << "loss msg" <<endl;
+                          EV << "Sender: Message will be loss " <<endl;
 
-                     const char* str=getName();
-                     std::string s = str;
+                          const char* str=getName();
+                          std::string s = str;
+                          error_msg =  s + " : drop message with id = " +  to_string(msg_seqno) +
+                                  " and content = " +  msgg->getM_Payload() +
+                                    "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t);
+                          addtoLogFile(error_msg,"pair01");
+                          out = 0;
+                          msg_seqno++;
+                          msgg->setM_Type(4);
+                          scheduleAt(simTime()+0.4, msgg);
+                      }
+                      if(mod_error == '1')
+                      {
+                           cout << "modi msg " << endl;
+                           error_msg_type =error_msg_type + " Modification ";
+                           EV << "Sender : msg will de modified" <<endl;
+                           int index=uniform(0,1)*10;
+                           const char* str = msgg->getM_Payload();
+                           string s = str;
+                           int size = s.size();
+                           while (index > size-1)
+                           {
+                               index=uniform(0,1)*10;
+                           }
+                           string mypayload= msgg->getM_Payload();
+                           mypayload[index]=mypayload[index]+5;
+                           msgg->setM_Payload(mypayload.c_str());
+                           cout << "msg after modi " << msgg->getM_Payload() <<endl;
+                      }
+                      if(delay_error == '1')
+                      {
+                          cout << "delayed msg " << endl;
+                          error_msg_type = error_msg_type + " with delay ";
+                          double t = simTime().dbl();
 
-                     error_msg =  s + " : will send msg with id = "+  to_string(msg_seqno) +
-                                        " and content = " + msgg->getM_Payload()+ "  " + error_msg_type +
-                                        " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
+                          const char* str=getName();
+                          std::string s = str;
+                          error_msg = s + "  : send msg with id = "+ to_string( msg_seqno) + error_msg_type   +
+                                             " and content = " +msgg->getM_Payload() + " will be delayed" +
+                                             " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
+                          addtoLogFile(error_msg,"pair01");
+                          sendDelayed(msgg,delayy,"out"); // delay in second from ini file
+                          msg_seqno++;
+                          out = 1;
+                      }
+                      if(dup_error == '1')
+                      {
+                          error_msg_type = error_msg_type + "  with Duplication  ";
+                          sendDelayed(msgg, 0.01,"out");
+                          out = 2;
+                          //msg_seqno++;
+                      }
+                     if (out != 0 && out != 1) // not loss msg and not delayed msg
+                     {
+                         //int t = omnetpp::SimTime();
+                         double t = simTime().dbl();
 
-                     cout << "sending msg" <<endl;
-                     send(msgg,"out"); // dup w delay m3 b3d???
-                     msg_seqno++;
-                 }
+                         const char* str=getName();
+                         std::string s = str;
 
-                 EV <<"Sender node send new message with msg_seqnumber = " << msgg->getSeq_Num() << endl;
-                      // done send msg
-                      EV << error_msg ;
+                         error_msg =  s + " : will send msg with id = "+  to_string(msg_seqno) +
+                                            " and content = " + msgg->getM_Payload()+ "  " + error_msg_type +
+                                            " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
+
+                         addtoLogFile(error_msg,"pair01");
+                         cout << "sending msg" <<endl;
+                         send(msgg,"out"); // dup w delay m3 b3d???
+                         msg_seqno++;
+                     }
+
+                     EV <<"Sender node send new message with msg_seqnumber = " << msgg->getSeq_Num() << endl;
+                          // done send msg
+                          EV << error_msg ;
+        }
     }
 
 

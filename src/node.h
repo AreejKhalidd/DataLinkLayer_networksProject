@@ -33,7 +33,7 @@ class Node : public cSimpleModule
 {
   protected:
     //std::fstream my_file;
-    //std::fstream output;
+    std::fstream output;
     std::fstream dataFile;
     bool finished = false;
     bool ended = false;
@@ -41,6 +41,7 @@ class Node : public cSimpleModule
     virtual void handleMessage(cMessage *msg);
     virtual string byteStuffing(string msg);
     virtual string deStuffing(string msg);
+    virtual void addtoLogFile(string m,string m2);
     bool sender = false;
     vector<string> messages;
     vector <string> errors;
