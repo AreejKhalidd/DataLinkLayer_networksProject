@@ -27,7 +27,12 @@ Define_Module(Node);
 void Node::initialize()
 {
     // TODO - Generated method body
-
+//    ofstream f;
+//    f.open ("../outputs/pair01.txt",std::ios_base::app);
+//    f.close();
+    std::ofstream ofs;
+    ofs.open("../outputs/pair01.txt", std::ofstream::out | std::ofstream::trunc);
+    ofs.close();
 }
 void Node::addtoLogFile(string msg,string fname){
     ofstream f;
@@ -215,6 +220,23 @@ void Node::handleMessage(cMessage *msg)
              EV << m2 <<endl;
              addtoLogFile(m2,"pair01");
          }
+         if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
+         {
+             cout << "Sender finish sending messages.." <<endl;
+             // LOG FILE
+             string s0= s +  " : finish sending frames at time = " + to_string(t);
+             EV << s0 <<endl;
+             addtoLogFile(s0,"pair01");
+             addtoLogFile("-----------------------","pair01");
+             int total_time =  simTime().dbl() - start_time;
+             addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
+             addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
+             int tp = numb_correctmsgs / total_time;
+             addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
+             //HENAAAA
+
+             return;
+         }
          string error_msg = "";
          string error_msg_type = "";
          MyMessage_Base * msgg = new MyMessage_Base();
@@ -259,7 +281,7 @@ void Node::handleMessage(cMessage *msg)
               //schedule new event to complete (Self message )
               msgg->setM_Type(4);
              //msgg->piggybackingID(mmsg->piggybackingID());
-              scheduleAt(simTime()+0.4, msgg);
+              scheduleAt(simTime()+5, msgg);
               num_transmissions++;
           }
           if(mod_error == '1')
@@ -566,7 +588,7 @@ num_transmissions++;
                 addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
                 addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
                 int tp = numb_correctmsgs / total_time;
-                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / (simTime().dbl() - start_time)),"pair01");
+                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
                 //HENAAAA
 
                 return;
@@ -617,7 +639,7 @@ num_transmissions++;
                           out = 0;
                           msg_seqno++;
                           msgg->setM_Type(4);
-                          scheduleAt(simTime()+0.4, msgg);
+                          scheduleAt(simTime()+5, msgg);
                           num_transmissions++;
                       }
                       if(mod_error == '1')
