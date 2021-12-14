@@ -51,7 +51,7 @@ class Node : public cSimpleModule
     int num_transmissions = 0;
     int numb_correctmsgs = 0;
     //CRC Error Detection
-    const string generator="1011";
+    const string generator="1001";
     virtual string calculateCRC(string M_Payload);
 };
 

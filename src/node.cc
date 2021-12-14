@@ -140,23 +140,19 @@ string XORString(string a, string b)
 /*
 Main Concept of shifting bits and algorithm of CRC is got from : http://www.sunshine2k.de/articles/coding/crc/understanding_crc.html
 */
-string Node::calculateCRC(string M_Payload){
+string Node::calculateCRC(string binaryStr){
 
-    string binaryStr="";
 
-            //converting message to binary string
-                for (int i = 0; i < M_Payload.length(); i++)
-                {
-                        bitset<8> binaryBits(M_Payload[i]);
-                        binaryStr+=binaryBits.to_string();
-                }
-                cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+
+
+                /*
                 //append zeros at last of string
                 for(int i=0;i<generator.length()-1;i++)
                 {
                     binaryStr+='0';
                 }
                 cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                */
                 //Division
 
                 int j=0;
@@ -245,7 +241,17 @@ void Node::handleMessage(cMessage *msg)
          //byte stuffing
          msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
          // The CRC byte is added to the message trailer field
-         string CRCStr=calculateCRC(msgg->getM_Payload());
+         //converting message to binary string
+
+         string Payload=msgg->getM_Payload();
+         string binaryStr="";
+                         for (int i = 0; i < Payload.length(); i++)
+                         {
+                                 bitset<8> binaryBits(Payload[i]);
+                                 binaryStr+=binaryBits.to_string();
+                         }
+                         cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+         string CRCStr=calculateCRC(binaryStr);
          cout<<"CRC Bits: "<<CRCStr<<endl;
          EV<<"CRC Bits: "<<CRCStr<<endl;
          bits CRCbits(CRCStr);
@@ -320,7 +326,16 @@ void Node::handleMessage(cMessage *msg)
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
               // The CRC byte is added to the message trailer field
-              bits CRCbits(calculateCRC(msgg->getM_Payload()));
+              string Payload=msg_s->getM_Payload();
+                       string binaryStr="";
+                                       for (int i = 0; i < Payload.length(); i++)
+                                       {
+                                               bitset<8> binaryBits(Payload[i]);
+                                               binaryStr+=binaryBits.to_string();
+                                       }
+                                       cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                       string CRCStr=calculateCRC(binaryStr);
+              bits CRCbits(CRCStr);
 
               msg_s->setMycheckbits(CRCbits);
 
@@ -338,8 +353,18 @@ void Node::handleMessage(cMessage *msg)
               msg_s->setM_Type(msgg->getM_Type());
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
-              bits CRCbits(calculateCRC(msgg->getM_Payload()));
-              msg_s->setMycheckbits(CRCbits);
+              string Payload=msg_s->getM_Payload();
+                                     string binaryStr="";
+                                                     for (int i = 0; i < Payload.length(); i++)
+                                                     {
+                                                             bitset<8> binaryBits(Payload[i]);
+                                                             binaryStr+=binaryBits.to_string();
+                                                     }
+                                                     cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                                     string CRCStr=calculateCRC(binaryStr);
+                            bits CRCbits(CRCStr);
+
+                            msg_s->setMycheckbits(CRCbits);
 EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
 num_transmissions++;
               sendDelayed(msg_s, 0.01,"out");
@@ -413,7 +438,16 @@ num_transmissions++;
              msg_s->setSeq_Num(start);
              msg_s->setM_Type(type);
              msg_s->setM_Payload("Start sending..");
-             string CRCStr=calculateCRC(msg_s->getM_Payload());
+             string Payload=msg_s->getM_Payload();
+                      string binaryStr="";
+                                      for (int i = 0; i < Payload.length(); i++)
+                                      {
+                                              bitset<8> binaryBits(Payload[i]);
+                                              binaryStr+=binaryBits.to_string();
+                                      }
+                                      cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                      string CRCStr=calculateCRC(binaryStr);
+
              cout<<"CRC Bits: "<<CRCStr<<endl;
              EV<<"CRC Bits: "<<CRCStr<<endl;
              bits CRCbits(CRCStr);
@@ -440,14 +474,29 @@ num_transmissions++;
     else if( type == 1  )// receiver receive data message from the other node
     {
         string mymsg = mmsg->getM_Payload();
-        string CRCStr=calculateCRC(mmsg->getM_Payload());
-        cout<<"CRC Bits: "<<CRCStr<<endl;
+        string characterCRC = (mmsg->getMycheckbits()).to_string();
+
+        //unsigned char crc = static_cast<unsigned char>( characterCRC );
+        //string crcbits=(mmsg->getMycheckbits()).to_string();
+        string Payload=mmsg->getM_Payload();
+                             string binaryStr="";
+                                             for (int i = 0; i < Payload.length(); i++)
+                                             {
+                                                     bitset<8> binaryBits(Payload[i]);
+                                                     binaryStr+=binaryBits.to_string();
+                                             }
+
+                                             cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                                             binaryStr=binaryStr+characterCRC[5]+characterCRC[6]+characterCRC[7];
+                             string CRCStr=calculateCRC(binaryStr);
+
+        cout<<"CRC Bits: "<<CRCStr<<"   "<<binaryStr <<"     "<<binaryStr.length()<<endl;
         EV<<"CRC Bits: "<<CRCStr<<endl;
         bits CRCbits(CRCStr);
         string errordetection = "";
-        bits sent=mmsg->getMycheckbits();
+        bits zeross(0);
         int err_typee;
-                if(sent==CRCbits)
+                if(CRCbits==zeross)
                 {
                     err_typee=2;// ACK no error
                     errordetection = errordetection + "ACK = 2 ";
@@ -601,7 +650,18 @@ num_transmissions++;
                      msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
 
                      EV<<msgg->getM_Payload()<<endl;
-                                      string CRCStr=calculateCRC(msgg->getM_Payload());
+                     string binaryStr="";
+                     string Payload=msgg->getM_Payload();
+                                                                  for (int i = 0; i < Payload.length(); i++)
+                                                                  {
+                                                                          bitset<8> binaryBits(Payload[i]);
+                                                                          binaryStr+=binaryBits.to_string();
+                                                                  }
+
+                                                                  cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+
+                                                  string CRCStr=calculateCRC(binaryStr);
+
                                       cout<<"CRC Bits: "<<CRCStr<<endl;
                                       EV<<"CRC Bits: "<<CRCStr<<endl;
                                       bits CRCbits(CRCStr);
@@ -678,9 +738,23 @@ num_transmissions++;
                           msg_s->setM_Payload( msgg->getM_Payload());
                           msg_s->setpiggybackingID( msgg->getpiggybackingID());
                           // The CRC byte is added to the message trailer field
-                          bits CRCbits(calculateCRC(msgg->getM_Payload()));
+                          string binaryStr="";
+                                               string Payload=msg_s->getM_Payload();
+                                                                                            for (int i = 0; i < Payload.length(); i++)
+                                                                                            {
+                                                                                                    bitset<8> binaryBits(Payload[i]);
+                                                                                                    binaryStr+=binaryBits.to_string();
+                                                                                            }
 
-                          msg_s->setMycheckbits(CRCbits);
+                                                                                            cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+
+                                                                            string CRCStr=calculateCRC(binaryStr);
+
+                                                                cout<<"CRC Bits: "<<CRCStr<<endl;
+                                                                EV<<"CRC Bits: "<<CRCStr<<endl;
+                                                                bits CRCbits(CRCStr);
+                                                                //cout<<CRCbits<<endl;
+                                                                msg_s->setMycheckbits(CRCbits);
 
                           addtoLogFile(error_msg,"pair01");
                           sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
@@ -697,8 +771,21 @@ num_transmissions++;
                           msg_s->setM_Payload( msgg->getM_Payload());
                           msg_s->setpiggybackingID( msgg->getpiggybackingID());
 
-                          bits CRCbits(calculateCRC(msgg->getM_Payload()));
-                          msg_s->setMycheckbits(CRCbits);
+                          string Payload=msg_s->getM_Payload();
+                                                               string binaryStr="";
+                                                                               for (int i = 0; i < Payload.length(); i++)
+                                                                               {
+                                                                                       bitset<8> binaryBits(Payload[i]);
+                                                                                       binaryStr+=binaryBits.to_string();
+                                                                               }
+                                                                               cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                                                               string CRCStr=calculateCRC(binaryStr);
+                                                      bits CRCbits(CRCStr);
+
+                                                      msg_s->setMycheckbits(CRCbits);
+
+                          //bits CRCbits(calculateCRC(msgg->getM_Payload()));
+                          //msg_s->setMycheckbits(CRCbits);
                           num_transmissions++;
                           sendDelayed(msg_s, 0.01,"out");
                           out = 2;
