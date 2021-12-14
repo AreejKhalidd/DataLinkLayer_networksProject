@@ -132,50 +132,7 @@ Main Concept of shifting bits and algorithm of CRC is got from : http://www.suns
 string Node::calculateCRC(string M_Payload){
 
     string binaryStr="";
-    //converting message to binary string
-        for (int i = 0; i < M_Payload.length(); i++)
-        {
-                bitset<8> binaryBits(M_Payload[i]);
-                binaryStr+=binaryBits.to_string();
-        }
-        //append zeros at last of string
-        for(int i=0;i<binaryStr.length();i++)
-        {
-            binaryStr+='0';
-        }
-        //Division
-       //string binaryStr="";
-            for (int i = 0; i < M_Payload.length(); i++)
-            {
-                    bitset<8> binaryBits(M_Payload[i]);
-                    binaryStr+=binaryBits.to_string();
-            }
-                       cout<< binaryStr<<endl ;
 
-                  string generator ="1001" ;
-                for(int i=0;i<generator.length();i++)
-                {
-                    binaryStr+='0';
-                }
-                       cout<< binaryStr<<endl ;
-                       /*
-            long long int binaryArr=0;
-                for (int i =M_Payload.length()-1 ; i >=0 ; i--)
-                {
-                        bitset<8> binaryBits(M_Payload[i]);
-                        binaryArr=binaryArr >> (32);
-                        binaryArr+=stoi(binaryBits.to_string());
-                        cout<<binaryArr<<endl;
-                }
-                cout<<binaryArr;
-               //cout<< stoi(binaryStr)  ;
-
-        string str="";
-        cout<<str.length();
-        */
-        //string M_Payload="";
-        //string binaryStr="1110101010101010101010110010101011011";
-        //string generator="1001";
             //converting message to binary string
                 for (int i = 0; i < M_Payload.length(); i++)
                 {
@@ -190,7 +147,7 @@ string Node::calculateCRC(string M_Payload){
                 }
                 cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
                 //Division
-                //int i=binaryStr.length();
+
                 int j=0;
                 string dividend="";
                 string str="";
@@ -226,15 +183,12 @@ string Node::calculateCRC(string M_Payload){
                 if(str=="")
                     str="0";
 
-                cout<<stoi(str);
-
-        //‘(x<<y)’ is equivalent to multiplying x with 2^y (2 raised to power y)
-
                 return str;
 }
 
 void Node::handleMessage(cMessage *msg)
 {
+    double delayy=par("delay").doubleValue();
     // TODO - Generated method body
     MyMessage_Base *mmsg = check_and_cast<MyMessage_Base *>(msg);
     int start = mmsg->getSeq_Num();
@@ -256,6 +210,14 @@ void Node::handleMessage(cMessage *msg)
          msgg->setSeq_Num(msg_seqno);
          //byte stuffing
          msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
+         // The CRC byte is added to the message trailer field
+         string CRCStr=calculateCRC(msgg->getM_Payload());
+         cout<<"CRC Bits: "<<CRCStr<<endl;
+         EV<<"CRC Bits: "<<CRCStr<<endl;
+         bits CRCbits(CRCStr);
+
+         msgg->setMycheckbits(CRCbits);
+         EV<<msgg->getM_Payload()<<endl;
          string curr_error = errors[msg_seqno];
          // Errors
          //int check = checkErrorsType();
@@ -320,7 +282,12 @@ void Node::handleMessage(cMessage *msg)
               msg_s->setM_Type(msgg->getM_Type());
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
-              sendDelayed(msg_s,0.2,"out"); // delay in second from ini file
+              // The CRC byte is added to the message trailer field
+              bits CRCbits(calculateCRC(msgg->getM_Payload()));
+
+              msg_s->setMycheckbits(CRCbits);
+
+              sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
               msg_seqno++;
               out = 1;
           }
@@ -334,7 +301,7 @@ void Node::handleMessage(cMessage *msg)
               msg_s->setM_Payload( msgg->getM_Payload());
               msg_s->setpiggybackingID( msgg->getpiggybackingID());
 EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
-              sendDelayed(msg_s, 0.01,"out");
+              sendDelayed(msg_s, delayy,"out");
               out = 2;
               //msg_seqno++;
           }
@@ -401,6 +368,11 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
              msg_s->setSeq_Num(start);
              msg_s->setM_Type(type);
              msg_s->setM_Payload("Start sending..");
+             string CRCStr=calculateCRC(msg_s->getM_Payload());
+             cout<<"CRC Bits: "<<CRCStr<<endl;
+             EV<<"CRC Bits: "<<CRCStr<<endl;
+             bits CRCbits(CRCStr);
+             msg_s->setMycheckbits(CRCbits);
              EV <<"Sender schedule self message" << endl;
              scheduleAt(start, msg_s);
 
@@ -420,6 +392,17 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
     else if( type == 1  )// receiver receive data message from the other node
     {
         string mymsg = mmsg->getM_Payload();
+        string CRCStr=calculateCRC(mmsg->getM_Payload());
+        cout<<"CRC Bits: "<<CRCStr<<endl;
+        EV<<"CRC Bits: "<<CRCStr<<endl;
+        bits CRCbits(CRCStr);
+
+        bits sent=mmsg->getMycheckbits();
+        int err_typee;
+                if(sent==CRCbits)
+                    err_typee=2;// ACK no error
+                else
+                    err_typee=3;// NACK error
         // de-stuffing
         string final_msg = deStuffing(mymsg);
         string error_msg = "";
@@ -429,8 +412,7 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
         //cout << " message before de-stuffing "<< mymsg <<endl;
         cout << " message received after de-stuffing "<< final_msg <<endl;
         // Detect errors
-        // send ACK
-        int err_typee = 2; // ACK no error
+
 
 
         if(mmsg->getSeq_Num() < msg_ack )
@@ -523,6 +505,15 @@ EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
                  msgg->setSeq_Num(msg_seqno);
                  //byte stuffing
                  msgg->setM_Payload(byteStuffing(messages[msg_seqno]).c_str());
+
+                 EV<<msgg->getM_Payload()<<endl;
+                                  string CRCStr=calculateCRC(msgg->getM_Payload());
+                                  cout<<"CRC Bits: "<<CRCStr<<endl;
+                                  EV<<"CRC Bits: "<<CRCStr<<endl;
+                                  bits CRCbits(CRCStr);
+                                  //cout<<CRCbits<<endl;
+                                  msgg->setMycheckbits(CRCbits);
+
                  msgg->setpiggybackingID(mmsg->getpiggybackingID());
 
                  string curr_error = errors[msg_seqno];

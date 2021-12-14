@@ -19,7 +19,10 @@ package data_link_layer_protocols_simulation;
 // TODO auto-generated module
 //
 simple Node
-{
+{	
+    parameters:
+        double delay;
+        
     gates:
         input in;
         input inCoordinator;
