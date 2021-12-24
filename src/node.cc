@@ -544,7 +544,7 @@ num_transmissions++;
             const char* str=getName();
             std::string s = str;
 
-            error_msg = s + " : drop  duplicated message with id = " +to_string(mmsg->getSeq_Num()) +" with content = "+ mymsg
+            error_msg = s + " : drop  duplicated message with id = " +to_string(mmsg->getSeq_Num()) +" with content = "+ final_msg
                     + " at time = " + to_string(t);
             cout << "Receiver Dup frame .. discard frame " <<endl;
             // msh hn3ml haga hya kdakda duplicated message
@@ -560,7 +560,7 @@ num_transmissions++;
             const char* str=getName();
             std::string s = str;
             error_msg = s + " : received message (messaged lost before this message ) with id = " +  to_string(mmsg->getSeq_Num()) +
-                    " and content = " +mmsg->getM_Payload()   + errordetection +
+                    " and content = " +final_msg   + errordetection +
                       "and piggy backing ACK ="+  to_string(msg_ack) +" at time = "  + to_string(t);
             msg_ack = mmsg->getSeq_Num();
             msg_ack++;
@@ -577,7 +577,7 @@ num_transmissions++;
             double t = simTime().dbl();
             cout << "Receiver ..received frame .. send new ACK" << endl;
             error_msg = s + " : received message with id = " +  to_string(mmsg->getSeq_Num()) +
-                    " and content = " + mmsg->getM_Payload() + errordetection +
+                    " and content = " + final_msg + errordetection +
                       "  and piggy backing ACK ="+  to_string(msg_ack) +" at time = " + to_string(t) ;
             msg_ack++;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
