@@ -1,0 +1,40 @@
+node4 : received msg from coordinator...
+node5 : received msg from coordinator
+node5 : start to reading data from file
+node5 : finished reading from file...
+node5 : received self message to start/complete sending messages at time = 2.000000
+node5 : will send msg with id = 0 and content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ with Duplication and piggy backing ACK = 0 at time = 2.000000
+node4 : received message with id = 0 and content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ACK = 2   and piggy backing ACK =0 at time = 2.000000
+node4 : drop  duplicated message with id = 0 with content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ at time = 2.010000
+node5 : received ACK = 2 at time = 2.200000
+node5 : will send msg with id = 1 and content = $is a natural light display in Earth's sky,$   and piggy backing ACK =1 at time = 2.200000.
+node4 : received message with id = 1 and content = $is a natural light display in Earth's sky,$ACK = 2   and piggy backing ACK =1 at time = 2.200000
+node5 : get NACK from (dup msg) , with piggybacking id =  1 at time = 2.210000
+node5 : received ACK = 2 at time = 2.400000
+node5 : will send msg with id = 2 and content = $predominantly seen in high-latitude regions$    with Duplication   and piggy backing ACK =2 at time = 2.400000.
+node4 : received message with id = 2 and content = $predominantly seen in high-latitude regions$ACK = 2   and piggy backing ACK =2 at time = 2.400000
+node4 : drop  duplicated message with id = 2 with content = $predominantly seen in high-latitude regions$ at time = 2.410000
+node5 : received ACK = 2 at time = 2.600000
+node5 : will send msg with id = 3 and content = $(arownd the Arctic// and Antarctic).$   Modification   with Duplication   and piggy backing ACK =3 at time = 2.600000.
+node4 : received message with id = 3 and content = $(arownd the Arctic// and Antarctic).$  with Modification and NACK = 3  and piggy backing ACK =3 at time = 2.600000
+node5 : get NACK from (dup msg) , with piggybacking id =  3 at time = 2.610000
+node4 : drop  duplicated message with id = 3 with content = $(arownd the Arctic// and Antarctic).$ at time = 2.610000
+node5 : received NACK = 3 at time = 2.800000
+node5 : will send msg with id = 4 and content = $Auroras display dynamic patterns of brilliant lights//$   and piggy backing ACK =4 at time = 2.800000.
+node4 : received message with id = 4 and content = $Auroras display dynamic patterns of brilliant lights//$ACK = 2   and piggy backing ACK =4 at time = 2.800000
+node5 : get NACK from (dup msg) , with piggybacking id =  4 at time = 2.810000
+node5 : received ACK = 2 at time = 3.000000
+node5 : will send msg with id = 5 and content = $that appear as curtains,$   and piggy backing ACK =5 at time = 3.000000.
+node4 : received message with id = 5 and content = $that appear as curtains,$ACK = 2   and piggy backing ACK =5 at time = 3.000000
+node5 : received ACK = 2 at time = 3.200000
+node5 : will send msg with id = 6 and content = $rays, spirals/$$   and piggy backing ACK =6 at time = 3.200000.
+node4 : received message with id = 6 and content = $rays, spirals/$$ACK = 2   and piggy backing ACK =6 at time = 3.200000
+node5 : received ACK = 2 at time = 3.400000
+node5 : drop message with id = 7 and content = $or dynamic flickers covering the entire sky/$$and piggy backing ACK =7 at time = 3.400000
+node5 : received self message to start/complete sending messages at time = 8.400000
+node5 : time out .. complete sending messages
+node5 : finish sending frames at time = 8.400000
+-----------------------
+total transmission time = 6.400000
+total number of transmissions  = 11
+throughput of network = 0.937500

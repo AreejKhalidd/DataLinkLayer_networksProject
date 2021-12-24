@@ -35,13 +35,15 @@ class Node : public cSimpleModule
     //std::fstream my_file;
     std::fstream output;
     std::fstream dataFile;
+    string logFile = "pair";
     bool finished = false;
     bool ended = false;
     virtual void initialize();
+    virtual void intializeLogFile(string name);
     virtual void handleMessage(cMessage *msg);
     virtual string byteStuffing(string msg);
     virtual string deStuffing(string msg);
-    virtual void addtoLogFile(string m,string m2);
+    virtual void addtoLogFile(string m);
     bool sender = false;
     vector<string> messages;
     vector <string> errors;

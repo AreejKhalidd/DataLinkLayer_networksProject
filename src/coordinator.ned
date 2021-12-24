@@ -22,5 +22,5 @@ simple Coordinator
 {
     gates:
        
-        output out[2];
+        output out[6];
 }

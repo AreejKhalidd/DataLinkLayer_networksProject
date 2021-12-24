@@ -34,9 +34,24 @@ void Node::initialize()
     ofs.open("../outputs/pair01.txt", std::ofstream::out | std::ofstream::trunc);
     ofs.close();
 }
-void Node::addtoLogFile(string msg,string fname){
+void Node::intializeLogFile(string nodeName)
+{
+    if (nodeName == "node0" ||nodeName == "node1" )
+    {
+        logFile = "pair01.txt";
+    }
+    if (nodeName == "node2" ||nodeName == "node3" )
+    {
+        logFile = "pair23.txt";
+    }
+    if (nodeName == "node4" ||nodeName == "node5" )
+    {
+        logFile = "pair45.txt";
+    }
+}
+void Node::addtoLogFile(string msg){
     ofstream f;
-    f.open ("../outputs/pair01.txt",std::ios_base::app);
+    f.open ("../outputs/"+logFile,std::ios_base::app);
     f << msg+"\n";
     f.close();
 }
@@ -209,12 +224,12 @@ void Node::handleMessage(cMessage *msg)
         //LOG FILE
         string m =  s +" : received self message to start/complete sending messages at time = " + to_string(t) ;
         EV << m <<endl;
-        addtoLogFile(m,"pair01");
+        addtoLogFile(m);
          if( type == 4 )
          {
              string m2 = s + " : time out .. complete sending messages";
              EV << m2 <<endl;
-             addtoLogFile(m2,"pair01");
+             addtoLogFile(m2);
          }
          if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
          {
@@ -222,13 +237,13 @@ void Node::handleMessage(cMessage *msg)
              // LOG FILE
              string s0= s +  " : finish sending frames at time = " + to_string(t);
              EV << s0 <<endl;
-             addtoLogFile(s0,"pair01");
-             addtoLogFile("-----------------------","pair01");
+             addtoLogFile(s0);
+             addtoLogFile("-----------------------");
              //int total_time =  simTime().dbl() - start_time;
-             addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
-             addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
+             addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time));
+             addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions));
              //int tp = numb_correctmsgs / total_time;
-             addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
+             addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)));
              //HENAAAA
 
              return;
@@ -281,7 +296,7 @@ void Node::handleMessage(cMessage *msg)
                       " and content = " +  msgg->getM_Payload() +
                         "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " +  to_string(t);
               cout << "loss msg" <<endl;
-              addtoLogFile(error_msg,"pair01");
+              addtoLogFile(error_msg);
               out = 0;
               msg_seqno++;
               //schedule new event to complete (Self message )
@@ -303,7 +318,7 @@ void Node::handleMessage(cMessage *msg)
                    index=uniform(0,1)*10;
                }
                string mypayload= msgg->getM_Payload();
-               mypayload[index]=mypayload[index]+5;
+               mypayload[index]=mypayload[index]+2;
                msgg->setM_Payload(mypayload.c_str());
                cout << "msg after modi " << msgg->getM_Payload() <<endl;
 
@@ -319,7 +334,7 @@ void Node::handleMessage(cMessage *msg)
               error_msg = s + ":  send msg with id = "+  to_string(msg_seqno) +
                                  " and content = " +msgg->getM_Payload() + "will be delayed" +
                                  "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t)  ;
-              addtoLogFile(error_msg,"pair01");
+              addtoLogFile(error_msg);
               MyMessage_Base * msg_s = new MyMessage_Base();
               msg_s->setSeq_Num(msgg->getSeq_Num());
               msg_s->setM_Type(msgg->getM_Type());
@@ -380,7 +395,7 @@ num_transmissions++;
              error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
                      " and content = " +msgg->getM_Payload()  +error_msg_type +
                      "and piggy backing ACK = "+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) ;
-             addtoLogFile(error_msg,"pair01");
+             addtoLogFile(error_msg);
              send(msgg,"out"); // dup w delay m3 b3d???
              num_transmissions++;
              msg_seqno++;
@@ -393,15 +408,17 @@ num_transmissions++;
     {
         if(start != -1 ) // if node is sender then read file
         {
-            EV <<"Sender start reading from file.." << endl;
-            sender = true;
-
             const char* str=getName();
             std::string s = str;
+            sender = true;
+            intializeLogFile(s);
+            string h = s + " : received msg from coordinator";
+            addtoLogFile(h);
             // LOG FILE
-            string m3 = s + " :  start to reading data from file";
+            EV <<"Sender start reading from file.." << endl;
+            string m3 = s + " : start to reading data from file";
             EV << m3 <<endl;
-            addtoLogFile(m3,"pair01");
+            addtoLogFile(m3);
             string file_name = "../inputsSamples/";
             cout << "File name from msg: " << mmsg->getM_Payload() <<endl;
             file_name = file_name + mmsg->getM_Payload();
@@ -431,7 +448,7 @@ num_transmissions++;
              std::string s1 = str1;
              string m4 = s1 + " : finished reading from file...";
              EV << m4 << endl;
-             addtoLogFile(m4,"pair01");
+             addtoLogFile(m4);
              cout << "Sender node finish reading from file" <<endl;
              // Self message with start time
              MyMessage_Base * msg_s = new MyMessage_Base();
@@ -461,12 +478,12 @@ num_transmissions++;
         {
             //receiver
             // LOG FILE
-
             const char* str=getName();
             std::string s = str;
+            intializeLogFile(s);
             string m4 = s + " : received msg from coordinator...";
             EV << m4 << endl;
-            addtoLogFile(m4,"pair01");
+            addtoLogFile(m4);
             sender = false;
         }
 
@@ -524,14 +541,11 @@ num_transmissions++;
             err_typee = 5;
             //LOG FILE
             double t = simTime().dbl();
-
             const char* str=getName();
             std::string s = str;
 
-            error_msg = s + " : drop  duplicated message with id = " +to_string(mmsg->getSeq_Num()) +" with content = "+ mymsg ;
+            error_msg = s + " : drop  duplicated message with id = " +to_string(mmsg->getSeq_Num()) +" with content = "+ mymsg
                     + " at time = " + to_string(t);
-
-
             cout << "Receiver Dup frame .. discard frame " <<endl;
             // msh hn3ml haga hya kdakda duplicated message
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
@@ -543,7 +557,6 @@ num_transmissions++;
         {
             double t = simTime().dbl();
             cout << "Receiver ..received frame( loss message occured) .. send new ACK" << endl;
-
             const char* str=getName();
             std::string s = str;
             error_msg = s + " : received message (messaged lost before this message ) with id = " +  to_string(mmsg->getSeq_Num()) +
@@ -566,7 +579,6 @@ num_transmissions++;
             error_msg = s + " : received message with id = " +  to_string(mmsg->getSeq_Num()) +
                     " and content = " + mmsg->getM_Payload() + errordetection +
                       "  and piggy backing ACK ="+  to_string(msg_ack) +" at time = " + to_string(t) ;
-
             msg_ack++;
             MyMessage_Base * msg1 = new MyMessage_Base(" ");
             msg1->setM_Type(err_typee);
@@ -576,7 +588,7 @@ num_transmissions++;
 
         // LOG FILE  //+ simTime() +
         EV << error_msg <<endl;
-        addtoLogFile(error_msg,"pair01");
+        addtoLogFile(error_msg);
     }
     else if (type == 2 || type == 3 || type == 5)
     {
@@ -594,7 +606,7 @@ num_transmissions++;
                s +  " : received ACK = " + to_string(type) + " at time = " + to_string(t) ;
            EV << ss;
            numb_correctmsgs++;
-           addtoLogFile(ss,"pair01");
+           addtoLogFile(ss);
         }
         else if ( type == 3)
         {
@@ -602,15 +614,15 @@ num_transmissions++;
             string ss=
                 s +  " : received NACK = " + to_string(type) + " at time = " + to_string(t);
             EV << ss;
-            addtoLogFile(ss,"pair01");
+            addtoLogFile(ss);
         }
 
-        if (mmsg->getpiggybackingID() < msg_seqno)
+        if (mmsg->getpiggybackingID() < msg_seqno || type == 5)
         {
             //discard ACK
-            string s2 = s + " : get dup ACK , with piggybacking id =  " + to_string(mmsg->getpiggybackingID())  + " at time = " +  to_string(t);
+            string s2 = s + " : get NACK from (dup msg) , with piggybacking id =  " + to_string(mmsg->getpiggybackingID())  + " at time = " +  to_string(t);
             EV <<   s2 <<endl;
-            addtoLogFile(s2,"pair01");
+            addtoLogFile(s2);
             cout << "Sender:Delayed or dup ACK .. dicard ACK .. send new frame " <<endl;
             if ( mmsg->getpiggybackingID() > messages.size()-1  || msg_seqno > messages.size()-1  )
             {
@@ -618,13 +630,13 @@ num_transmissions++;
                 // LOG FILE
                 string s0= s +  " : finish sending frames at time = " + to_string(t);
                 EV << s0 <<endl;
-                addtoLogFile(s0,"pair01");
-                addtoLogFile("-----------------------","pair01");
+                addtoLogFile(s0);
+                addtoLogFile("-----------------------");
                 //int total_time =  simTime().dbl() - start_time;
-                addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
-                addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
+                addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time));
+                addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions));
                 //int tp = numb_correctmsgs / total_time;
-                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
+                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)));
                 //HENAAAA
                 return;
             }
@@ -639,13 +651,13 @@ num_transmissions++;
                 // LOG FILE
                 string s0= s +  " : finish sending frames at time = " + to_string(t);
                 EV << s0 <<endl;
-                addtoLogFile(s0,"pair01");
-                addtoLogFile("-----------------------","pair01");
+                addtoLogFile(s0);
+                addtoLogFile("-----------------------");
                 //int total_time =  simTime().dbl() - start_time;
-                addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time),"pair01");
-                addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions),"pair01");
+                addtoLogFile("total transmission time = "+ to_string(simTime().dbl() - start_time));
+                addtoLogFile("total number of transmissions  = "+ to_string(num_transmissions));
                 //int tp = numb_correctmsgs / total_time;
-                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)),"pair01");
+                addtoLogFile("throughput of network = " + to_string(numb_correctmsgs / ( simTime().dbl() - start_time)));
                 //HENAAAA
 
                 return;
@@ -703,7 +715,7 @@ num_transmissions++;
                           error_msg =  s + " : drop message with id = " +  to_string(msg_seqno) +
                                   " and content = " +  msgg->getM_Payload() +
                                     "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t);
-                          addtoLogFile(error_msg,"pair01");
+                          addtoLogFile(error_msg);
                           out = 0;
                           msg_seqno++;
                           msgg->setM_Type(4);
@@ -724,7 +736,7 @@ num_transmissions++;
                                index=uniform(0,1)*10;
                            }
                            string mypayload= msgg->getM_Payload();
-                           mypayload[index]=mypayload[index]+5;
+                           mypayload[index]=mypayload[index]+2;
                            msgg->setM_Payload(mypayload.c_str());
                            cout << "msg after modi " << msgg->getM_Payload() <<endl;
                       }
@@ -764,7 +776,7 @@ num_transmissions++;
                                                                 //cout<<CRCbits<<endl;
                                                                 msg_s->setMycheckbits(CRCbits);
 
-                          addtoLogFile(error_msg,"pair01");
+                          addtoLogFile(error_msg);
                           sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
                           msg_seqno++;
                           num_transmissions++;
@@ -811,7 +823,7 @@ num_transmissions++;
                                             " and content = " + msgg->getM_Payload()+ "  " + error_msg_type +
                                             " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
 
-                         addtoLogFile(error_msg,"pair01");
+                         addtoLogFile(error_msg);
                          cout << "sending msg" <<endl;
                          send(msgg,"out"); // dup w delay m3 b3d???
                          num_transmissions++;
