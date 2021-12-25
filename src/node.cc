@@ -48,6 +48,9 @@ void Node::intializeLogFile(string nodeName)
     {
         logFile = "pair45.txt";
     }
+    ofstream f;
+    f.open ("../outputs/"+logFile,std::ios_base::app);
+    f.close();
 }
 void Node::addtoLogFile(string msg){
     ofstream f;
@@ -287,8 +290,10 @@ void Node::handleMessage(cMessage *msg)
          char loss_error = curr_error[1];
          char dup_error = curr_error[2];
          char delay_error = curr_error[3];
+         bool loss = false;
           if(loss_error == '1') //skip this message
           {
+              loss =  true;
               double t = simTime().dbl();
               const char* str=getName();
               std::string s = str;
@@ -305,7 +310,7 @@ void Node::handleMessage(cMessage *msg)
               scheduleAt(simTime()+5, msgg);
               num_transmissions++;
           }
-          if(mod_error == '1')
+          if(mod_error == '1' && loss == false)
           {
                cout << "modi msg " << endl;
                error_msg_type = error_msg_type + " Modification ";
@@ -323,43 +328,8 @@ void Node::handleMessage(cMessage *msg)
                cout << "msg after modi " << msgg->getM_Payload() <<endl;
 
           }
-          if(delay_error == '1')
-          {
-              cout << "delayed msg " << endl;
-              error_msg_type = error_msg_type + " with delay ";
-              double t = simTime().dbl();
 
-              const char* str=getName();
-              std::string s = str;
-              error_msg = s + ":  send msg with id = "+  to_string(msg_seqno) +
-                                 " and content = " +msgg->getM_Payload() + "will be delayed" +
-                                 "and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t)  ;
-              addtoLogFile(error_msg);
-              MyMessage_Base * msg_s = new MyMessage_Base();
-              msg_s->setSeq_Num(msgg->getSeq_Num());
-              msg_s->setM_Type(msgg->getM_Type());
-              msg_s->setM_Payload( msgg->getM_Payload());
-              msg_s->setpiggybackingID( msgg->getpiggybackingID());
-              // The CRC byte is added to the message trailer field
-              string Payload=msg_s->getM_Payload();
-                       string binaryStr="";
-                                       for (int i = 0; i < Payload.length(); i++)
-                                       {
-                                               bitset<8> binaryBits(Payload[i]);
-                                               binaryStr+=binaryBits.to_string();
-                                       }
-                                       cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
-                       string CRCStr=calculateCRC(binaryStr);
-              bits CRCbits(CRCStr);
-
-              msg_s->setMycheckbits(CRCbits);
-
-              sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
-              msg_seqno++;
-              num_transmissions++;
-              out = 1;
-          }
-          if(dup_error == '1')
+          if(dup_error == '1'&& loss == false)
           {
               cout << "dup msg " << endl;
               error_msg_type = error_msg_type + " with Duplication ";
@@ -382,14 +352,67 @@ void Node::handleMessage(cMessage *msg)
                             msg_s->setMycheckbits(CRCbits);
 EV << " AHUU H3ML SCHEDULE to send dupp att "  << simTime() + 0.01  << endl;
 num_transmissions++;
-              sendDelayed(msg_s, 0.01,"out");
-              out = 2;
+
+              double time = 0.01;
+              if (out == 1 )
+              {
+                   time = time + delayy;
+                   out = 1;
+                   cout << "AHHHHHHHHHH" <<  "  " << to_string(msg_seqno) << endl;
+                   EV <<"AHHHHHHHHHH" <<  "  " << to_string(msg_seqno) << endl;
+              }
+              else{
+                  out = 2;
+              }
+
+
+                   sendDelayed(msg_s,time,"out");
+                   num_transmissions++;
+
+              //out = 2;
               //msg_seqno++;
           }
+          if(delay_error == '1' && loss == false)
+                    {
+                        cout << "delayed msg " << endl;
+                        error_msg_type = error_msg_type + " with delay ";
+                        double t = simTime().dbl();
+
+                        //addtoLogFile(error_msg);
+                        MyMessage_Base * msg_s = new MyMessage_Base();
+                        msg_s->setSeq_Num(msgg->getSeq_Num());
+                        msg_s->setM_Type(msgg->getM_Type());
+                        msg_s->setM_Payload( msgg->getM_Payload());
+                        msg_s->setpiggybackingID( msgg->getpiggybackingID());
+                        // The CRC byte is added to the message trailer field
+                        string Payload=msg_s->getM_Payload();
+                                 string binaryStr="";
+                                                 for (int i = 0; i < Payload.length(); i++)
+                                                 {
+                                                         bitset<8> binaryBits(Payload[i]);
+                                                         binaryStr+=binaryBits.to_string();
+                                                 }
+                                                 cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                                 string CRCStr=calculateCRC(binaryStr);
+                        bits CRCbits(CRCStr);
+                        msg_s->setMycheckbits(CRCbits);
+                        double t2 = simTime().dbl();
+
+                        const char* str=getName();
+                        std::string s = str;
+                        error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
+                                " and content = " +msgg->getM_Payload()  +error_msg_type +
+                                "and piggy backing ACK = "+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) ;
+                        addtoLogFile(error_msg);
+                        sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
+                        msg_seqno++;
+                        num_transmissions++;
+                        out = 1;
+                    }
+
          if (out != 0 && out != 1) // not loss msg and not delayed msg
          {
              double t = simTime().dbl();
-
              const char* str=getName();
              std::string s = str;
              error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
@@ -704,8 +727,10 @@ num_transmissions++;
                      char loss_error = curr_error[1];
                      char dup_error = curr_error[2];
                      char delay_error = curr_error[3];
+                     bool loss = false;
                       if(loss_error == '1') //skip this message
                       {
+                          loss = true;
                           double t = simTime().dbl();
                           cout << "loss msg" <<endl;
                           EV << "Sender: Message will be loss " <<endl;
@@ -722,7 +747,7 @@ num_transmissions++;
                           scheduleAt(simTime()+5, msgg);
                           num_transmissions++;
                       }
-                      if(mod_error == '1')
+                      if(mod_error == '1'&& loss == false)
                       {
                            cout << "modi msg " << endl;
                            error_msg_type =error_msg_type + " Modification ";
@@ -740,18 +765,49 @@ num_transmissions++;
                            msgg->setM_Payload(mypayload.c_str());
                            cout << "msg after modi " << msgg->getM_Payload() <<endl;
                       }
-                      if(delay_error == '1')
+
+                      if(dup_error == '1'&& loss == false)
+                      {
+                          error_msg_type = error_msg_type + "  with Duplication  ";
+                          MyMessage_Base * msg_s = new MyMessage_Base();
+                          msg_s->setSeq_Num(msgg->getSeq_Num());
+                          msg_s->setM_Type(msgg->getM_Type());
+                          msg_s->setM_Payload( msgg->getM_Payload());
+                          msg_s->setpiggybackingID( msgg->getpiggybackingID());
+
+                          string Payload=msg_s->getM_Payload();
+                                                               string binaryStr="";
+                                                                               for (int i = 0; i < Payload.length(); i++)
+                                                                               {
+                                                                                       bitset<8> binaryBits(Payload[i]);
+                                                                                       binaryStr+=binaryBits.to_string();
+                                                                               }
+                                                                               cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
+                                                               string CRCStr=calculateCRC(binaryStr);
+                                                      bits CRCbits(CRCStr);
+
+                                                      msg_s->setMycheckbits(CRCbits);
+
+                          //bits CRCbits(calculateCRC(msgg->getM_Payload()));
+                          //msg_s->setMycheckbits(CRCbits);
+
+
+                          double time = 0.01;
+                          if (delay_error == '1')
+                          {
+                               time = time +delayy;
+                               out = 1;
+                          }
+                          else
+                              out = 2;
+                          sendDelayed(msg_s,time,"out");
+                          num_transmissions++;
+                          //msg_seqno++;
+                      }
+                      if(delay_error == '1'&& loss == false)
                       {
                           cout << "delayed msg " << endl;
                           error_msg_type = error_msg_type + " with delay ";
-                          double t = simTime().dbl();
-
-                          const char* str=getName();
-                          std::string s = str;
-                          error_msg = s + "  : send msg with id = "+ to_string( msg_seqno) + error_msg_type   +
-                                             " and content = " +msgg->getM_Payload() + " will be delayed" +
-                                             " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
-
                           MyMessage_Base * msg_s = new MyMessage_Base();
                           msg_s->setSeq_Num(msgg->getSeq_Num());
                           msg_s->setM_Type(msgg->getM_Type());
@@ -776,59 +832,36 @@ num_transmissions++;
                                                                 //cout<<CRCbits<<endl;
                                                                 msg_s->setMycheckbits(CRCbits);
 
-                          addtoLogFile(error_msg);
-                          sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
-                          msg_seqno++;
+                        double t = simTime().dbl();
+                        const char* str=getName();
+                        std::string s = str;
+                        error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
+                                " and content = " +msgg->getM_Payload()  +error_msg_type +
+                                "and piggy backing ACK = "+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) ;
+                        addtoLogFile(error_msg);
+
+
+                           sendDelayed(msg_s,delayy,"out"); // delay in second from ini file
+                              msg_seqno++;
                           num_transmissions++;
                           out = 1;
                       }
-                      if(dup_error == '1')
-                      {
-                          error_msg_type = error_msg_type + "  with Duplication  ";
-                          MyMessage_Base * msg_s = new MyMessage_Base();
-                          msg_s->setSeq_Num(msgg->getSeq_Num());
-                          msg_s->setM_Type(msgg->getM_Type());
-                          msg_s->setM_Payload( msgg->getM_Payload());
-                          msg_s->setpiggybackingID( msgg->getpiggybackingID());
 
-                          string Payload=msg_s->getM_Payload();
-                                                               string binaryStr="";
-                                                                               for (int i = 0; i < Payload.length(); i++)
-                                                                               {
-                                                                                       bitset<8> binaryBits(Payload[i]);
-                                                                                       binaryStr+=binaryBits.to_string();
-                                                                               }
-                                                                               cout<<binaryStr <<"     "<<binaryStr.length()<<endl;
-                                                               string CRCStr=calculateCRC(binaryStr);
-                                                      bits CRCbits(CRCStr);
-
-                                                      msg_s->setMycheckbits(CRCbits);
-
-                          //bits CRCbits(calculateCRC(msgg->getM_Payload()));
-                          //msg_s->setMycheckbits(CRCbits);
-                          num_transmissions++;
-                          sendDelayed(msg_s, 0.01,"out");
-                          out = 2;
-                          //msg_seqno++;
-                      }
                      if (out != 0 && out != 1) // not loss msg and not delayed msg
                      {
-                         //int t = omnetpp::SimTime();
                          double t = simTime().dbl();
-
                          const char* str=getName();
                          std::string s = str;
-
-                         error_msg =  s + " : will send msg with id = "+  to_string(msg_seqno) +
-                                            " and content = " + msgg->getM_Payload()+ "  " + error_msg_type +
-                                            " and piggy backing ACK ="+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) + "." ;
-
+                         error_msg = s + " : will send msg with id = "+  to_string(msg_seqno) +
+                                 " and content = " +msgg->getM_Payload()  +error_msg_type +
+                                 "and piggy backing ACK = "+  to_string(mmsg->getpiggybackingID()) +" at time = " + to_string(t) ;
                          addtoLogFile(error_msg);
                          cout << "sending msg" <<endl;
                          send(msgg,"out"); // dup w delay m3 b3d???
                          num_transmissions++;
                          msg_seqno++;
                      }
+
 
                      EV <<"Sender node send new message with msg_seqnumber = " << msgg->getSeq_Num() << endl;
                           // done send msg
