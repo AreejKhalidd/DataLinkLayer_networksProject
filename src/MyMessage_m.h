@@ -63,10 +63,17 @@ typedef  std::bitset<8> bits;
 class MyMessage_Base : public ::omnetpp::cPacket
 {
   protected:
+    int ackORnack;
+    // 2 ACK
+    // 3 NACK error in msg only
+    // 5 in order,dup
+    // 7 inorder,loss
     int piggybackingID=0; // ACk id
     int Seq_Num; // if from coordinator -> seq = -1 receiver else sender with start = seq number
     int M_Type; // if type == 0 from coordinator // if type == 1 (Data) sender to receiver node
     // if type == 2 or 3(dup frame) or 5 (dupl) receiver to sender with ack
+    // self msg -> type ==6 (start sending) type == 4 (time out for complete sending)
+    // type = 55 ->one node finished sending
     ::omnetpp::opp_string M_Payload;
     bits mycheckbits;
 
@@ -90,9 +97,11 @@ class MyMessage_Base : public ::omnetpp::cPacket
     virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
-    // field getter/setter methods
+    // field getter/setter methods ackORnack
     virtual void setpiggybackingID(int num);
     virtual int getpiggybackingID() const;
+    virtual void setackORnack(int n) ;
+    virtual int getackORnack() const;
     virtual int getSeq_Num() const;
     virtual void setSeq_Num(int Seq_Num);
     virtual int getM_Type() const;

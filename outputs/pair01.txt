@@ -1,40 +1,79 @@
 node0 : received msg from coordinator
 node0 : start to reading data from file
 node0 : finished reading from file...
+number of msgs = 8 and window size = 4..
 node1 : received msg from coordinator...
-node0 : received self message to start/complete sending messages at time = 3.000000
+node1 : Receiver to reading data from file
+node1 : finished reading from file...
+number of msgs = 16 and window size = 8..
+node0 : received self message to start sending messages at time = 3.000000
 node0 : will send msg with id = 0 and content = $/$An aurora, also known as the polar lights/$ or aurora polaris,$ with Duplication and piggy backing ACK = 0 at time = 3.000000
 node1 : received message with id = 0 and content = $An aurora, also known as the polar lights$ or aurora polaris,ACK = 2   and piggy backing ACK =0 at time = 3.000000
-node1 : drop  duplicated message with id = 0 with content = $An aurora, also known as the polar lights$ or aurora polaris, at time = 3.010000
-node0 : received ACK = 2 at time = 3.200000
-node0 : will send msg with id = 1 and content = $is a natural light display in Earth's sky,$and piggy backing ACK = 1 at time = 3.200000
-node1 : received message with id = 1 and content = is a natural light display in Earth's sky,ACK = 2   and piggy backing ACK =1 at time = 3.200000
-node0 : get NACK from (dup msg) , with piggybacking id =  1 at time = 3.210000
-node0 : received ACK = 2 at time = 3.400000
-node0 : will send msg with id = 2 and content = $predominantly seen in high-latitude regions$  with Duplication  and piggy backing ACK = 2 at time = 3.400000
-node1 : received message with id = 2 and content = predominantly seen in high-latitude regionsACK = 2   and piggy backing ACK =2 at time = 3.400000
-node1 : drop  duplicated message with id = 2 with content = predominantly seen in high-latitude regions at time = 3.410000
-node0 : received ACK = 2 at time = 3.600000
-node0 : will send msg with id = 3 and content = $(arownd the Arctic// and Antarctic).$ Modification   with Duplication  and piggy backing ACK = 3 at time = 3.600000
-node1 : received message with id = 3 and content = (arownd the Arctic/ and Antarctic).  with Modification and NACK = 3  and piggy backing ACK =3 at time = 3.600000
-node0 : get NACK from (dup msg) , with piggybacking id =  3 at time = 3.610000
-node1 : drop  duplicated message with id = 3 with content = (arownd the Arctic/ and Antarctic). at time = 3.610000
-node0 : received NACK = 3 at time = 3.800000
-node0 : will send msg with id = 4 and content = $Auroras display dynamic patterns of brilliant lights//$and piggy backing ACK = 4 at time = 3.800000
-node1 : received message with id = 4 and content = Auroras display dynamic patterns of brilliant lights/ACK = 2   and piggy backing ACK =4 at time = 3.800000
-node0 : get NACK from (dup msg) , with piggybacking id =  4 at time = 3.810000
-node0 : received ACK = 2 at time = 4.000000
-node0 : will send msg with id = 5 and content = $that appear as curtains,$and piggy backing ACK = 5 at time = 4.000000
-node1 : received message with id = 5 and content = that appear as curtains,ACK = 2   and piggy backing ACK =5 at time = 4.000000
-node0 : received ACK = 2 at time = 4.200000
-node0 : will send msg with id = 6 and content = $rays, spirals/$$and piggy backing ACK = 6 at time = 4.200000
-node1 : received message with id = 6 and content = rays, spirals$ACK = 2   and piggy backing ACK =6 at time = 4.200000
-node0 : received ACK = 2 at time = 4.400000
-node0 : drop message with id = 7 and content = $or dynamic flickers covering the entire sky/$$and piggy backing ACK =7 at time = 4.400000
-node0 : received self message to start/complete sending messages at time = 9.400000
+node1 : will send msg with id = 0 and content = $The violin, sometimes known as a fiddle$and piggy backing ACK = 0 at time = 3.000000
+node1 : received and drop  duplicated message with id = 0With NACK = 5 with content = $An aurora, also known as the polar lights$ or aurora polaris,and piggy backing ACK =1 at time = 3.010000
+node1 : will send msg with id = 1 and content = $is a wooden chordophone (string instrument)$ with Duplication and piggy backing ACK = 0 at time = 3.010000
+node0 : received message with id = 0 and content = The violin, sometimes known as a fiddleACK = 2   and piggy backing ACK =0 at time = 3.050000
+node0 : will send msg with id = 1 and content = $is a natural light display in Earth's sky,$and piggy backing ACK = 1 at time = 3.050000
+node0 : received message with id = 1 and content = is a wooden chordophone (string instrument)ACK = 2   and piggy backing ACK =1 at time = 3.060000
+node0 : will send msg with id = 2 and content = $predominantly seen in high-latitude regions$ with Duplication and piggy backing ACK = 1 at time = 3.060000
+node0 : received and drop  duplicated message with id = 1With NACK = 5 with content = is a wooden chordophone (string instrument)and piggy backing ACK =2 at time = 3.070000
+node0 : will send msg with id = 3 and content = $(around"the Arctic// and Antarctic).$ Modification  with Duplication and piggy backing ACK = 1 at time = 3.070000
+node1 : received message with id = 1 and content = is a natural light display in Earth's sky,ACK = 2   and piggy backing ACK =1 at time = 3.100000
+node1 : will drop message with id = 2 and content = $in the violin family.$and piggy backing ACK =1 at time = 3.100000
+node1 : received message with id = 2 and content = predominantly seen in high-latitude regionsACK = 2   and piggy backing ACK =2 at time = 3.110000
+node1 : will drop message with id = 3 and content = $Most violins have a hollow wooden body.$and piggy backing ACK =2 at time = 3.110000
+node1 : received and drop  duplicated message with id = 2With NACK = 5 with content = predominantly seen in high-latitude regionsand piggy backing ACK =3 at time = 3.120000
+node1 : will send msg with id = 4 and content = $It is the smallest and thus highest-pitched instrument$and piggy backing ACK = 2 at time = 3.120000
+node1 : received message with id = 3 and content = (around"the Arctic/ and Antarctic).  with Modification and NACK = 3  and piggy backing ACK =3 at time = 3.120000
+node1 : will send msg with id = 5 and content = $(soprano) in the family in regular use.$and piggy backing ACK = 2 at time = 3.120000
+node1 : received and drop  duplicated message with id = 3With NACK = 5 with content = (around"the Arctic/ and Antarctic).and piggy backing ACK =4 at time = 3.130000
+node1 : will send msg with id = 6 and content = $[a] The violin typically has four strings,$and piggy backing ACK = 2 at time = 3.130000
+node0 : received message (messaged lost before this message ) with id = 4 and content = It is the smallest and thus highest-pitched instrumentACK = 2 and piggy backing ACK =2 at time = 3.170000
+node0 : will send msg with id = 4 and content = $Auroras display dynamic patterns of brilliant lights//$and piggy backing ACK = 3 at time = 3.170000
+node0 : received and drop  duplicated message with id = 5With NACK = 5 with content = (soprano) in the family in regular use.and piggy backing ACK =6 at time = 3.170000
+node0 : will send msg with id = 5 and content = $that appear as curtains,$and piggy backing ACK = 4 at time = 3.170000
+node0 : received message with id = 6 and content = [a] The violin typically has four strings,ACK = 2   and piggy backing ACK =6 at time = 3.180000
+node0 : will send msg with id = 6 and content = $rays, spirals/$$and piggy backing ACK = 4 at time = 3.180000
+node1 : time out .. complete sending messages
+node1 : will send msg with id = 7 and content = $(some can have five/$), usually tuned in perfect$and piggy backing ACK = 2 at time = 3.200000
+node0 : received message with id = 7 and content = (some can have five$), usually tuned in perfectACK = 2   and piggy backing ACK =7 at time = 3.200000
+node0 : will drop message with id = 7 and content = $or dynamic flickers covering the entire sky/$$and piggy backing ACK =4 at time = 3.200000
+node1 : time out .. complete sending messages
+node1 : will send msg with id = 8 and content = $fifths with notes G3, D4, A4, E5,$and piggy backing ACK = 3 at time = 3.210000
+node0 : received message with id = 8 and content = fifths with notes G3, D4, A4, E5,ACK = 2   and piggy backing ACK =8 at time = 3.210000
+node0 : finish sending frames at time = 3.210000
+node1 : received message with id = 4 and content = Auroras display dynamic patterns of brilliant lights/ACK = 2   and piggy backing ACK =4 at time = 3.220000
+node1 : will drop message with id = 9 and content = $and is most commonly played by drawing$and piggy backing ACK =6 at time = 3.220000
+node1 : received message with id = 5 and content = that appear as curtains,ACK = 2   and piggy backing ACK =5 at time = 3.220000
+node1 : will send msg with id = 10 and content = $a bow across its strings.$and piggy backing ACK = 6 at time = 3.220000
+node1 : received message with id = 6 and content = rays, spirals$ACK = 2   and piggy backing ACK =6 at time = 3.230000
+node1 : will send msg with id = 11 and content = $It can also be played by plucking$and piggy backing ACK = 7 at time = 3.230000
+node1 : received nothing as the paired node finished at time = 3.260000
+node1 : will send msg with id = 12 and content = $the svrings/$ with the fingers (pizzicato)$ Modification  with delay and piggy backing ACK = 9 at time = 3.260000
+node0 : received message (messaged lost before this message ) with id = 10 and content = a bow across its strings.ACK = 2 and piggy backing ACK =9 at time = 3.270000
+node0 : received and drop  duplicated message with id = 11With NACK = 5 with content = It can also be played by pluckingand piggy backing ACK =12 at time = 3.280000
 node0 : time out .. complete sending messages
-node0 : finish sending frames at time = 9.400000
------------------------
-total transmission time = 6.400000
-total number of transmissions  = 12
-throughput of network = 0.937500
+node1 : received nothing as the paired node finished at time = 3.300000
+node1 : will send msg with id = 13 and content = $and, in specialized cases, by striking$and piggy backing ACK = 12 at time = 3.300000
+node1 : time out .. complete sending messages
+node1 : will send msg with id = 14 and content = $the strings with the wooden side/$ of the bow$ with Duplication and piggy backing ACK = 5 at time = 3.320000
+node0 : received message with id = 12 and content = the svrings$ with the fingers (pizzicato)  with Modification and NACK = 3  and piggy backing ACK =12 at time = 3.320000
+node1 : received nothing as the paired node finished at time = 3.320000
+node1 : will send msg with id = 15 and content = $(col legno).$and piggy backing ACK = 12 at time = 3.320000
+node0 : received message (messaged lost before this message ) with id = 14 and content = the strings with the wooden side$ of the bowACK = 2 and piggy backing ACK =13 at time = 3.320000
+node1 : received nothing as the paired node finished at time = 3.330000
+node1 : finish sending frames at time = 3.330000
+Both nodes finished..session finished.. at time = 3.330000
+node0 : received and drop  duplicated message with id = 14With NACK = 5 with content = the strings with the wooden side$ of the bowand piggy backing ACK =16 at time = 3.330000
+node0 : received and drop  duplicated message with id = 13With NACK = 5 with content = and, in specialized cases, by strikingand piggy backing ACK =16 at time = 3.350000
+node1 : received nothing as the paired node finished at time = 3.370000
+Both nodes finished..session finished.. at time = 3.370000
+node0 : received and drop  duplicated message with id = 15With NACK = 5 with content = (col legno).and piggy backing ACK =16 at time = 3.370000
+node1 : received nothing as the paired node finished at time = 3.370000
+Both nodes finished..session finished.. at time = 3.370000
+node1 : received nothing as the paired node finished at time = 3.380000
+Both nodes finished..session finished.. at time = 3.380000
+node1 : received nothing as the paired node finished at time = 3.400000
+Both nodes finished..session finished.. at time = 3.400000
+node1 : received nothing as the paired node finished at time = 3.420000
+Both nodes finished..session finished.. at time = 3.420000

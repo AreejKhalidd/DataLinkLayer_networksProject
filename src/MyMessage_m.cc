@@ -238,7 +238,14 @@ int MyMessage_Base::getSeq_Num() const
 {
     return this->Seq_Num;
 }
-
+int MyMessage_Base::getackORnack() const
+{
+    return this->ackORnack;
+}
+void MyMessage_Base :: setackORnack(int n)
+{
+    this->ackORnack = n;
+}
 void MyMessage_Base::setSeq_Num(int Seq_Num)
 {
     this->Seq_Num = Seq_Num;

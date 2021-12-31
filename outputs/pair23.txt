@@ -1,36 +1,45 @@
 node2 : received msg from coordinator
 node2 : start to reading data from file
 node2 : finished reading from file...
+number of msgs = 8 and window size = 4..
 node3 : received msg from coordinator...
-node2 : received self message to start/complete sending messages at time = 7.000000
+node3 : Receiver to reading data from file
+node3 : finished reading from file...
+number of msgs = 5 and window size = 2..
+node2 : received self message to start sending messages at time = 7.000000
 node2 : will send msg with id = 0 and content = $Sherlock Holmes is a fictional detective$and piggy backing ACK = 0 at time = 7.000000
 node3 : received message with id = 0 and content = Sherlock Holmes is a fictional detectiveACK = 2   and piggy backing ACK =0 at time = 7.000000
-node2 : received ACK = 2 at time = 7.200000
-node2 : will send msg with id = 1 and content = $created by British author/$ Sir Arthur Conan Doyle.$  with Duplication  and piggy backing ACK = 1 at time = 7.200000
-node3 : received message with id = 1 and content = created by British author$ Sir Arthur Conan Doyle.ACK = 2   and piggy backing ACK =1 at time = 7.200000
-node3 : drop  duplicated message with id = 1 with content = created by British author$ Sir Arthur Conan Doyle. at time = 7.210000
-node2 : received ACK = 2 at time = 7.400000
-node2 : drop message with id = 2 and content = $Referring to himself as a// "consulting detective" in the stories,$and piggy backing ACK =2 at time = 7.400000
-node2 : get NACK from (dup msg) , with piggybacking id =  2 at time = 7.410000
-node2 : received self message to start/complete sending messages at time = 12.400000
+node3 : will send msg with id = 0 and content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$ with delay and piggy backing ACK = 0 at time = 7.000000
+node2 : received message with id = 0 and content = A cherry blossom is a flower of many trees of genus$ Prunus or Prunus subg.ACK = 2   and piggy backing ACK =0 at time = 7.060000
+node2 : will send msg with id = 1 and content = $created by British author/$ Sir Arthur Conan Doyle.$ with Duplication and piggy backing ACK = 1 at time = 7.060000
+node3 : received message with id = 1 and content = created by British author$ Sir Arthur Conan Doyle.ACK = 2   and piggy backing ACK =1 at time = 7.110000
+node3 : will send msg with id = 1 and content = $They are also known as Japanese cherry and Sakura$ with Duplication  with delay and piggy backing ACK = 1 at time = 7.110000
+node3 : received and drop  duplicated message with id = 1With NACK = 5 with content = created by British author$ Sir Arthur Conan Doyle.and piggy backing ACK =2 at time = 7.120000
+node3 : will send msg with id = 2 and content = $They generally refer to /$ ornamental cherry trees,$and piggy backing ACK = 1 at time = 7.120000
+node2 : received message with id = 1 and content = They are also known as Japanese cherry and SakuraACK = 2   and piggy backing ACK =1 at time = 7.170000
+node2 : will drop message with id = 2 and content = $Referring to himself as a// "consulting detective" in the stories,$and piggy backing ACK =2 at time = 7.170000
+node2 : received and drop  duplicated message with id = 1With NACK = 5 with content = They are also known as Japanese cherry and Sakuraand piggy backing ACK =2 at time = 7.170000
+node2 : will send msg with id = 3 and content = $Holmes is known for his proficiency with observation,$and piggy backing ACK = 2 at time = 7.170000
+node2 : received message with id = 2 and content = They generally refer to $ ornamental cherry trees,ACK = 2   and piggy backing ACK =2 at time = 7.170000
+node2 : will send msg with id = 4 and content = $deduction, forensic science,$and piggy backing ACK = 2 at time = 7.170000
+node3 : received message (messaged lost before this message ) with id = 3 and content = Holmes is known for his proficiency with observation,ACK = 2 and piggy backing ACK =2 at time = 7.220000
+node3 : will send msg with id = 3 and content = $not to be confused with cherry trees that// produce fruit for eating.$and piggy backing ACK = 2 at time = 7.220000
+node3 : received and drop  duplicated message with id = 4With NACK = 5 with content = deduction, forensic science,and piggy backing ACK =5 at time = 7.220000
+node3 : will send msg with id = 4 and content = $It is cqnsidered// the national flower of Japan.$ Modification and piggy backing ACK = 3 at time = 7.220000
 node2 : time out .. complete sending messages
-node2 : will send msg with id = 3 and content = $Holmes is known for his proficiency with observation,$and piggy backing ACK = 2 at time = 12.400000
-node3 : received message (messaged lost before this message ) with id = 3 and content = Holmes is known for his proficiency with observation,ACK = 2 and piggy backing ACK =2 at time = 12.400000
-node2 : received ACK = 2 at time = 12.600000
-node2 : will send msg with id = 4 and content = $deduction, forensic science,$and piggy backing ACK = 4 at time = 12.600000
-node3 : received message with id = 4 and content = deduction, forensic science,ACK = 2   and piggy backing ACK =4 at time = 12.600000
-node2 : received ACK = 2 at time = 12.800000
-node2 : will send msg with id = 5 and content = $and// logical reasoning/$ that borders on the fantastic,$and piggy backing ACK = 5 at time = 12.800000
-node3 : received message with id = 5 and content = and/ logical reasoning$ that borders on the fantastic,ACK = 2   and piggy backing ACK =5 at time = 12.800000
-node2 : received ACK = 2 at time = 13.000000
-node2 : drop message with id = 6 and content = $which he employs when investigating cases for a wide variety of clients,$and piggy backing ACK =6 at time = 13.000000
-node2 : received self message to start/complete sending messages at time = 18.000000
+node2 : will send msg with id = 5 and content = $and// logical reasoning/$ that borders on the fantastic,$and piggy backing ACK = 2 at time = 7.270000
+node2 : received message with id = 3 and content = not to be confused with cherry trees that/ produce fruit for eating.ACK = 2   and piggy backing ACK =3 at time = 7.270000
+node2 : will drop message with id = 6 and content = $which he employs when investigating cases for a wide variety of clients,$and piggy backing ACK =5 at time = 7.270000
+node2 : received message with id = 4 and content = It is cqnsidered/ the national flower of Japan.  with Modification and NACK = 3  and piggy backing ACK =4 at time = 7.270000
+node2 : will send msg with id = 7 and content = $including Scotland Yard.$and piggy backing ACK = 5 at time = 7.270000
+node3 : received message with id = 5 and content = and/ logical reasoning$ that borders on the fantastic,ACK = 2   and piggy backing ACK =5 at time = 7.270000
+node3 : finish sending frames at time = 7.270000
+node3 : received message (messaged lost before this message ) with id = 7 and content = including Scotland Yard.ACK = 2 and piggy backing ACK =6 at time = 7.320000
+node2 : received nothing as the paired node finished at time = 7.320000
+node2 : finish sending frames at time = 7.320000
+Both nodes finished..session finished.. at time = 7.320000
 node2 : time out .. complete sending messages
-node2 : will send msg with id = 7 and content = $including Scotland Yard.$and piggy backing ACK = 6 at time = 18.000000
-node3 : received message (messaged lost before this message ) with id = 7 and content = including Scotland Yard.ACK = 2 and piggy backing ACK =6 at time = 18.000000
-node2 : received ACK = 2 at time = 18.200000
-node2 : finish sending frames at time = 18.200000
------------------------
-total transmission time = 11.200000
-total number of transmissions  = 9
-throughput of network = 0.535714
+node2 : received nothing as the paired node finished at time = 7.370000
+Both nodes finished..session finished.. at time = 7.370000
+node3 : received nothing as the paired node finished at time = 7.370000
+Both nodes finished..session finished.. at time = 7.370000
