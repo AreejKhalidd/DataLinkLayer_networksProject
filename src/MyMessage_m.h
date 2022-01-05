@@ -63,11 +63,14 @@ typedef  std::bitset<8> bits;
 class MyMessage_Base : public ::omnetpp::cPacket
 {
   protected:
-    int ackORnack;
+
+    int ackORnack = 0;
     // 2 ACK
     // 3 NACK error in msg only
     // 5 in order,dup
     // 7 inorder,loss
+    int idReceived=-1;
+    int WS = 0;
     int piggybackingID=0; // ACk id
     int Seq_Num; // if from coordinator -> seq = -1 receiver else sender with start = seq number
     int M_Type; // if type == 0 from coordinator // if type == 1 (Data) sender to receiver node
@@ -90,6 +93,7 @@ class MyMessage_Base : public ::omnetpp::cPacket
     MyMessage_Base& operator=(const MyMessage_Base& other);
 
   public:
+    std::vector<int> hamm;
     MyMessage_Base(const char *name=nullptr, short kind=0);
     virtual ~MyMessage_Base();
     virtual MyMessage_Base *dup() const override {return new MyMessage_Base(*this);}
@@ -102,8 +106,12 @@ class MyMessage_Base : public ::omnetpp::cPacket
     virtual int getpiggybackingID() const;
     virtual void setackORnack(int n) ;
     virtual int getackORnack() const;
+    virtual void setidReceived(int n) ;
+    virtual int getidReceived() const;
     virtual int getSeq_Num() const;
     virtual void setSeq_Num(int Seq_Num);
+    virtual int getWS() const;
+    virtual void setWS(int Seq_Num);
     virtual int getM_Type() const;
     virtual void setM_Type(int M_Type);
     virtual const char * getM_Payload() const;

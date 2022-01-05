@@ -22,7 +22,7 @@ simple Node
 {	
     parameters:
         double delay;
-        
+        double CRC;
     gates:
         input in;
         input inCoordinator;

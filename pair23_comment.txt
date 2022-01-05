@@ -1,0 +1,41 @@
+node2 : received msg from coordinator
+node2 : start to reading data from file
+node2 : finished reading from file...
+number of msgs = 8 and window size = 4..
+node3 : received msg from coordinator...
+node3 : Receiver to reading data from file
+node3 : finished reading from file...
+number of msgs = 4 and window size = 2..
+node2 : received self message to start sending messages at time = 7.000000
+node2 : will drop message with id = 0 and content = $Sherlock Holmes is a fictional detective$and piggy backing ACK =0 at time = 7.000000
+node2 : will send msg with id = 1 and content = $created by British author/$ Sir Arthur Conan Doyle.$and piggy backing ACK = 0 at time = 7.000000
+node2 : will send msg with id = 2 and content = $Referring to himself as a// "consulting detective" in the stories,$and piggy backing ACK = 0 at time = 7.000000
+node2 : will send msg with id = 3 and content = $Holmes is known for his proficiency with observation,$and piggy backing ACK = 0 at time = 7.000000
+
+node2 send 1,2,3 and 0 lost 
+
+node3 : received message (LOSS!!,will send nack  ) with id = 1 and content = created by British author$ Sir Arthur Conan Doyle.ACK = 2 and piggy backing ACK =0 at time = 7.050000
+node3 : will send msg with id = 0 and content = $A cherry blossom is a flower of many trees of genus/$ Prunus or Prunus subg.$and piggy backing ACK = 0 at time = 7.050000
+node3 : will send msg with id = 1 and content = $They are also known as Japanese cherry and Sakura$and piggy backing ACK = 0 at time = 7.050000
+node3 : received message (LOSS!!,will send nack  ) with id = 2 and content = Referring to himself as a/ "consulting detective" in the stories,ACK = 2 and piggy backing ACK =0 at time = 7.100000
+node3 : received message (LOSS!!,will send nack  ) with id = 3 and content = Holmes is known for his proficiency with observation,ACK = 2 and piggy backing ACK =0 at time = 7.150000
+
+node3 rec 1,2,3 but was wait for 0 -> NACK and send F 0,1 (Window)
+
+node2 : received message with id = 0 and content = A cherry blossom is a flower of many trees of genus$ Prunus or Prunus subg.ACK = 2   and piggy backing ACK =0 at time = 7.250000
+node2 : will send msg with id = 0 and content = $Sherlock Holmes is a fictional detective$RECEIVED NACKKand piggy backing ACK = 1 at time = 7.250000
+
+node 2 rec f0 with NACK init -> resend F0
+
+node2 : received message with id = 1 and content = They are also known as Japanese cherry and SakuraACK = 2   and piggy backing ACK =0 at time = 7.300000
+node2 : will send msg with id = 0 and content = $Sherlock Holmes is a fictional detective$RECEIVED NACKKand piggy backing ACK = 2 at time = 7.300000
+
+SOLVE: send NACK with all frame send (aktar mn mara)
+node3 : received message with id = 0 and content = Sherlock Holmes is a fictional detectiveACK = 2   and piggy backing ACK =1 at time = 7.300000
+node3 : will send msg with id = 2 and content = $not to be confused with cherry trees that// produce fruit for eating.$and piggy backing ACK = 4 at time = 7.300000
+
+
+node3 : received and drop  duplicated message with id = 0 with content = Sherlock Holmes is a fictional detectiveand piggy backing ACK =2 at time = 7.350000
+node3 : will send msg with id = 3 and content = $It is considered// the national flower of Japan.$and piggy backing ACK = 4 at time = 7.350000
+node2 : received message with id = 2 and content = not to be confused with cherry trees that/ produce fruit for eating.ACK = 2   and piggy backing ACK =4 at time = 7.700000
+node2 : received message with id = 3 and content = It is considered/ the national flower of Japan.ACK = 2   and piggy backing ACK =4 at time = 7.800000

@@ -33,17 +33,35 @@ class Node : public cSimpleModule
 {
   protected:
     //std::fstream my_file;
+    bool initWindow = false;
+    bool firstone = true;
+    //????????????????????MyMessage_Base * selfmsgforNACK;
     std::fstream output;
     std::fstream dataFile;
     string logFile = "pair";
     bool finished = false;
     bool ended = false;
-    int windowSize = 0;  // initialize at reading file
-    int startWindow = 0; // b3mlo update when recieving ack
-    int indexWindow = 0; // sending frames   < startWindow+windowSize (msg_seqno)
+    bool receivedWrong = false;
+    bool nackSent = false;
+    int nackSentID = -1;
+    bool  recghalt = false;
+    vector <bool> sentack;
+    vector <bool> Recsentack;
+    //SRP////////////////////////////////////////////////////////////////////////////////
+    int RwindowSize = 0;  // initialize bakhdo mn node tnya el ha-receive menha
+    int RWindowStart = 0; // b3mlo update lma ba reiceve sah
+    int msg_ack = 0; // waiting to be received (bet3y el ana mstneh)
+    vector<bool> received; // to mark the msgs i received to send the correct piggybacking ack
+
+    int SwindowSize = 0;  // initialize at reading file
+    int SWindowStart = 0; // b3mlo update when recieving ack
+    int msg_seqno = 0; // waiting to be sent (bet3o el hab3to)
+    vector<bool> sent; /// to mark sent msgs to send correct with the piggybacking ack
+    //////////////////////////////////////////////////////////////////////////////////////
+    //int indexWindow = 0; // sending frames   < startWindow+windowSize (msg_seqno)
     bool ackTimeout = false;
     bool sendNACK = false;
-    bool networklayerEnabled = true;
+    int no_ack  = -1;
     virtual void initialize();
     virtual void intializeLogFile(string name);
     virtual void handleMessage(cMessage *msg);
@@ -53,17 +71,18 @@ class Node : public cSimpleModule
     virtual string deStuffing(string msg);
     virtual void addtoLogFile(string m);
     // phase 2
-    virtual int nodeSendData(MyMessage_Base *mmsg);
-//    virtual int srReceive(MyMessage_Base *mmsg);
+    virtual int nodeSendData(MyMessage_Base *mmsg,double reply);
+    virtual int replyNACK(MyMessage_Base *mmsg,int id);
     virtual int nodeReceiveData(MyMessage_Base *mmsg);
     virtual int srSend(MyMessage_Base *mmsg);
     bool sender = false;
     bool doneOnce = false;
     vector<string> messages;
     vector <string> errors;
+    vector<bool> done;// to mark that i send this msg before
     bool intializeSending = true;
-    int msg_seqno = 0; // waiting to be sent (bet3o el hab3to)
-    int msg_ack = 0; // waiting to be received (bet3y el ana mstneh)
+
+
     int start_time = 0;
     int num_transmissions = 0;
     int numb_correctmsgs = 0;
