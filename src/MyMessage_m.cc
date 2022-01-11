@@ -547,5 +547,3 @@ void *MyMessageDescriptor::getFieldStructValuePointer(void *object, int field, i
         default: return nullptr;
     }
 }
-
-

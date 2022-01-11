@@ -44,7 +44,6 @@ typedef  std::bitset<8> bits;
  * {
  *   private:
  *     void copy(const MyMessage& other) { ... }
-
  *   public:
  *     MyMessage(const char *name=nullptr, short kind=0) : MyMessage_Base(name,kind) {}
  *     MyMessage(const MyMessage& other) : MyMessage_Base(other) {copy(other);}
@@ -123,4 +122,3 @@ class MyMessage_Base : public ::omnetpp::cPacket
 
 
 #endif // ifndef __MYMESSAGE_M_H
-

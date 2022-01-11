@@ -113,63 +113,64 @@ vector<int> hammingGeneration(string Strbits )
 }
 
 
-void hammingCorrection(vector<int>&a,int &errorIndex,int Strbits)
+void hammingCorrection(vector<int>&a,int &errorIndex,int Strbits,vector<int>parrity)
 {
     int p=0;
-    int pindex=0;
-    int count=Strbits;
-    int offset=0;
-    vector<int>parrityarr;
-    while (count + offset + 1 > pow(2, offset))
-    {
-        offset++;
-    }
-    int range=count+offset;
-    for (int i = 0; i < offset; i++)
-    {
-
-         p=a[pow(2, i)-1];
-
-         pindex=pow(2, i)-1;
-
-        //get offset2 of P
-        int offset2 = (log2(i+1));//1 2
-
-        //3 5
-        int d=0;
-        if(log2(i+1)==floor(log2(i+1)))
-        {int c=a[pow(2, d)-1];
-        d++;
-        for (int j = i +2;j <= range; ++j)
+        int pindex=0;
+        int count=Strbits;
+        int offset=0;
+        vector<int>parrityarr;
+        while (count + offset + 1 > pow(2, offset))
         {
-            int dummy=(1 << offset2);
-
-            if (j & dummy )
+            offset++;
+        }
+        int range=count+offset;
+        int j=0;
+        for (int i = 0; i < range; i++)
+        {
+        //only get parity for -1 values in array
+        int c=0;
+        //get offset2 of P
+        if (ceil(log2(i+1)) == floor(log2(i+1)))
             {
-                //cout<<"E"<<j<<" "<<a[j-1]<<" :"<<i<<endl;
-                if (a[j-1] == 1) {
+                c=parrity[i];
+                a[i]=-1;
+            }
+        int offset2 = log2(i+1);//1 2
+            if (a[i] == -1)
+          {
+            //3 5
+            for (int j = i + 2;j <= range; ++j)
+            {
+                int dummy=(1 << offset2);
 
-                    c++;
+                if ((j & dummy ))
+                {
+                    //cout<<"E"<<j<<" "<<hamarray[j-1]<<" :"<<(j & dummy)<<endl;
+                    //cout<<"E"<<j<<" "<<hamarray[j-1]<<" :"<<i<<endl;
+                    if (a[j-1] == 1) {
+
+                        c++;
+                    }
                 }
             }
-        }
 
-        if (c % 2 == 1)
-            parrityarr.push_back(1);
-        else
-            parrityarr.push_back(0);
+            if (c % 2 == 1)
+                parrityarr.push_back(1);
+            else
+                parrityarr.push_back(0);
 
+            }
         }
-    }
-    bool flag=true;
-    for (int i = 0; i < parrityarr.size(); i++)
-    { //cout<<parrityarr[i]<<endl;
-        errorIndex+=(parrityarr[i]*pow(2,i));
-        if(parrityarr[i]==1)
-            flag=false;
-    }
-    if(errorIndex==0 && flag)
-        errorIndex=-1;
+        bool flag=true;
+        for (int i = 0; i < parrityarr.size(); i++)
+        { //cout<<parrityarr[i]<<endl;
+            errorIndex+=(parrityarr[i]*pow(2,i));
+            if(parrityarr[i]==1)
+                flag=false;
+        }
+        if(errorIndex==0 && flag)
+            errorIndex=-1;
 
 }
 void Node::initialize()
@@ -830,23 +831,23 @@ int Node:: nodeReceiveData(MyMessage_Base *mmsg) // print tHE OTHER NODE piggyba
     }
     if (acktype==2 || acktype==3)
         {
-            cout << "HENAAAAAAAAAAAAAA" << endl;
-            cout << "S window size baa" + to_string(nodeack) <<endl;
-            SWindowStart++;
-            int j =  SWindowStart;
-            //SWindowStart = nodeack;
-            while(sent[j]==true)
-            {
-                j++;
+//            cout << "HENAAAAAAAAAAAAAA" << endl;
+//            cout << "S window size baa" + to_string(nodeack) <<endl;
+//            SWindowStart++;
+//            int j =  SWindowStart;
+//            //SWindowStart = nodeack;
+//            while(sent[j]==true)
+//            {
+//                j++;
+//
+//            }
+//            SWindowStart = j;
+//            cout << "HOWOCOME"+ to_string(j) <<endl;
+//           cout << "Received type = " + to_string(acktype) <<endl;
+        SWindowStart = nodeack;
 
-            }
-            SWindowStart = j;
-            cout << "HOWOCOME"+ to_string(j) <<endl;
-           cout << "Received type = " + to_string(acktype) <<endl;
 
-
-
-            cout << s+ " ha-send new frame start from " + to_string(j) << endl;
+           // cout << s+ " ha-send new frame start from " + to_string(j) << endl;
 
         }
     // start see what i received...........
@@ -906,42 +907,48 @@ int Node:: nodeReceiveData(MyMessage_Base *mmsg) // print tHE OTHER NODE piggyba
         }
         vector<int> outt = hammingGeneration(binaryStr);
         int error_bit=0;
-        hammingCorrection(outt,error_bit,binaryStr.length());
+               if(mmsg->hamm.size()!=outt.size())
+                           m= s + "Payload has other type of error than modification";
+                       else{
+                       hammingCorrection(outt,error_bit,binaryStr.length(),mmsg->hamm);//910
 
-        if(error_bit!=-1)
-        {
-           string finalmessage="";
-            if(binaryStr[error_bit] == '1')
-                     binaryStr[error_bit] ='0';
-                 else
-                     binaryStr[error_bit] ='1';
+                       if(error_bit!=-1)
+                       {
+                          string finalmessage="";
+                           if(binaryStr[binaryStr.length()-error_bit+9] == '1')
+                                    binaryStr[binaryStr.length()-error_bit+9] ='0';
+                           else
+                                    binaryStr[binaryStr.length()-error_bit+9] ='1';
 
-            for(int i=0;i<binaryStr.size();i=i+8)
-                {
-                string myStr=binaryStr.substr(i, i+8);
-                const char* myCharArr = myStr.c_str();
-                finalmessage+=BinaryStr(myCharArr);
-                }
+                           for(int i=0;i<binaryStr.size();i=i+8)
+                               {
+                               string myStr=binaryStr.substr(i, i+8);
+                               const char* myCharArr = myStr.c_str();
+                               finalmessage+=BinaryStr(myCharArr);
+                               }
 
 
-            m= s + " Error Position = " + to_string(error_bit) + "Corrected message = "
-                    + finalmessage + ".";
+                           m= s + " Error Position = " + to_string(error_bit) + "Corrected message = "
+                                   + finalmessage + ".";
 
-            err_typee=3;// NACK error
-           errordetection = errordetection + "  with Modification and NACK = 3";
+                           err_typee=3;// NACK error
+                          errordetection = errordetection + "  with Modification and NACK = 3";
 
-        }
-        else{
-            m=  s + " No Error Deteced by hamming " ;
-            err_typee=2;// ACK no error
-            errordetection = errordetection + "ACK = 2 ";
-        }
+                       }
+                       else{
+                           m=  s + " No Error Deteced by hamming " ;
+                           err_typee=2;// ACK no error
+                           errordetection = errordetection + "ACK = 2 ";
+                       }
+
+                       }
+
+
 
 
 
 
     }
-
 
     // de-stuffing
     string final_msg = deStuffing(mymsg);

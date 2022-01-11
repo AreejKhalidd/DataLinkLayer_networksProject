@@ -11,93 +11,77 @@ node5 : will send msg with id = 0 and content = $/$An aurora, also known as the 
 node5 : will send msg with id = 1 and content = $is a natural light display in Earth's sky,$and piggy backing ACK = 0 at time = 2.000000
 node5 : will send msg with id = 2 and content = $predominantly seen in high-latitude regions$ with Duplication and piggy backing ACK = 0 at time = 2.000000
 node5 : will send msg with id = 3 and content = $(arownd the Arctic// and Antarctic).$ Modification  with Duplication and piggy backing ACK = 0 at time = 2.000000
-node4 : received message with id = 0 and content = $An aurora, also known as the polar lights$ or aurora polaris,  with Modification and NACK = 3  and piggy backing ACK =0 at time = 2.200000
-node4 Error Position = 2Corrected message = An aurora, also known as the polar lights$ or aurora polaris,.
+node4 : received message with id = 0 and content = $An aurora, also known as the polar lights$ or aurora polaris,ACK = 2   and piggy backing ACK =0 at time = 2.200000
+node4 No Error Deteced by hamming 
 node4 : will send msg with id = 0 and content = $An enectric car is an automobile that is$ Modification and piggy backing ACK = 1 at time = 2.200000
 node4 : will send msg with id = 1 and content = $propelled by one or more electric motors,$and piggy backing ACK = 1 at time = 2.200000
 node4 : will send msg with id = 2 and content = $using energy stored in batteries.$and piggy backing ACK = 1 at time = 2.200000
 node4 : will send msg with id = 3 and content = $Compared to internal combustion engine (ICE) vehicles,$ with Duplication and piggy backing ACK = 1 at time = 2.200000
 node4 : received and drop  duplicated message with id = 0 with content = $An aurora, also known as the polar lights$ or aurora polaris,and piggy backing ACK =0 at time = 2.210000
-node4 Error Position = 2Corrected message = An aurora, also known as the polar lights$ or aurora polaris,.
-node4 : received message with id = 1 and content = is a natural light display in Earth's sky,  with Modification and NACK = 3  and piggy backing ACK =0 at time = 2.250000
-node4 Error Position = 4Corrected message = as a natural light display in Earth's sky,.
-node4 : received message with id = 2 and content = predominantly seen in high-latitude regions  with Modification and NACK = 3  and piggy backing ACK =0 at time = 2.300000
-node4 Error Position = 6Corrected message = rredominantly seen in high-latitude regions.
-node4 : received and drop  duplicated message with id = 2 with content = predominantly seen in high-latitude regionsand piggy backing ACK =0 at time = 2.310000
-node4 Error Position = 6Corrected message = rredominantly seen in high-latitude regions.
-node4 : received message with id = 3 and content = (arownd the Arctic/ and Antarctic).  with Modification and NACK = 3  and piggy backing ACK =0 at time = 2.350000
-node4 Error Position = 12Corrected message = (irownd the Arctic/ and Antarctic)..
-node4 : received and drop  duplicated message with id = 3 with content = (arownd the Arctic/ and Antarctic).and piggy backing ACK =0 at time = 2.360000
-node4 Error Position = 12Corrected message = (irownd the Arctic/ and Antarctic)..
-node5 : received message with id = 0 and content = An enectric car is an automobile that is  with Modification and NACK = 3  and piggy backing ACK =1 at time = 2.600000
-node5 Error Position = 2Corrected message = an enectric car is an automobile that is.
-node5 : will send msg with id = 4 and content = $Auroras display dynamic patterns of brilliant lights//$and piggy backing ACK = 1 at time = 2.600000
-node5 : will send msg with id = 5 and content = $that appear as curtains,$and piggy backing ACK = 1 at time = 2.600000
-node5 : will send msg with id = 6 and content = $rays, spirals/$$and piggy backing ACK = 1 at time = 2.600000
-node5 : will drop message with id = 7 and content = $or dynamic flickers covering the entire sky/$$and piggy backing ACK =1 at time = 2.600000
-node5 : received message with id = 1 and content = propelled by one or more electric motors,  with Modification and NACK = 3  and piggy backing ACK =1 at time = 2.650000
-node5 Error Position = 4Corrected message = xropelled by one or more electric motors,.
-node5 : finish sending frames at time = 2.650000
-node5 : received message with id = 2 and content = using energy stored in batteries.  with Modification and NACK = 3  and piggy backing ACK =1 at time = 2.700000
-node5 Error Position = 8Corrected message = uóing energy stored in batteries..
-node5 : received message with id = 3 and content = Compared to internal combustion engine (ICE) vehicles,  with Modification and NACK = 3  and piggy backing ACK =1 at time = 2.750000
-node5 Error Position = 12Corrected message = Cgmpared to internal combustion engine (ICE) vehicles,.
-node5 : received and drop  duplicated message with id = 3 with content = Compared to internal combustion engine (ICE) vehicles,and piggy backing ACK =1 at time = 2.760000
-node5 Error Position = 12Corrected message = Cgmpared to internal combustion engine (ICE) vehicles,.
-node4 : received message with id = 4 and content = Auroras display dynamic patterns of brilliant lights/  with Modification and NACK = 3  and piggy backing ACK =1 at time = 3.200000
-node4 Error Position = 12Corrected message = A}roras display dynamic patterns of brilliant lights/.
-node4 : will send msg with id = 4 and content = $electric cars are quieter,$ with Duplication  with delay and piggy backing ACK = 5 at time = 3.200000
-node4 : will send msg with id = 5 and content = $have no exhaust emissions, and lower emissions overall.$and piggy backing ACK = 5 at time = 3.200000
-node4 : will send msg with id = 6 and content = $In the United States and the European Union,$and piggy backing ACK = 5 at time = 3.200000
-node4 : will send msg with id = 7 and content = $as of 2220, the total cost of ownership of recent electric vehicles$ Modification and piggy backing ACK = 5 at time = 3.200000
-node4 : received message with id = 5 and content = that appear as curtains,  with Modification and NACK = 3  and piggy backing ACK =1 at time = 3.250000
-node4 Error Position = 14Corrected message = tjat appear as curtains,.
-node4 : will send msg with id = 8 and content = $is cheaper/$ than that of equivalent ICE cars,$and piggy backing ACK = 6 at time = 3.250000
-node4 : will send msg with id = 9 and content = $due to lower fueling and maintenance costs/$/$.$and piggy backing ACK = 6 at time = 3.250000
-node4 : will send msg with id = 10 and content = $Charging an electric car can be done at a variety of charging stations;$and piggy backing ACK = 6 at time = 3.250000
-node4 : will drop message with id = 11 and content = $these charging stations can be installed in both houses// and public areas.$and piggy backing ACK =6 at time = 3.250000
-node4 : received message with id = 6 and content = rays, spirals$ACK = 2   and piggy backing ACK =1 at time = 3.300000
+node4Payload has other type of error than modification
+node4 : received message with id = 1 and content = is a natural light display in Earth's sky,ACK = 2   and piggy backing ACK =0 at time = 2.250000
 node4 No Error Deteced by hamming 
-node4 : finish sending frames at time = 3.300000
+node4 : received message with id = 2 and content = predominantly seen in high-latitude regionsACK = 2   and piggy backing ACK =0 at time = 2.300000
+node4 No Error Deteced by hamming 
+node4 : received and drop  duplicated message with id = 2 with content = predominantly seen in high-latitude regionsand piggy backing ACK =0 at time = 2.310000
+node4Payload has other type of error than modification
+node4 : received message with id = 3 and content = (arownd the Arctic/ and Antarctic).  with Modification and NACK = 3  and piggy backing ACK =0 at time = 2.350000
+node4 Error Position = 250Corrected message = (arovnd the Arctic/ and Antarctic)..
+node4 : received and drop  duplicated message with id = 3 with content = (arownd the Arctic/ and Antarctic).and piggy backing ACK =0 at time = 2.360000
+node4Payload has other type of error than modification
+node5 : received message with id = 0 and content = An enectric car is an automobile that is  with Modification and NACK = 3  and piggy backing ACK =1 at time = 2.600000
+node5 Error Position = 291Corrected message = An electric car is an automobile that is.
+node5 : will send msg with id = 4 and content = $Auroras display dynamic patterns of brilliant lights//$and piggy backing ACK = 1 at time = 2.600000
+node5 : received message with id = 1 and content = propelled by one or more electric motors,ACK = 2   and piggy backing ACK =1 at time = 2.650000
+node5 No Error Deteced by hamming 
+node5 : received message with id = 2 and content = using energy stored in batteries.ACK = 2   and piggy backing ACK =1 at time = 2.700000
+node5 No Error Deteced by hamming 
+node5 : received message with id = 3 and content = Compared to internal combustion engine (ICE) vehicles,ACK = 2   and piggy backing ACK =1 at time = 2.750000
+node5 No Error Deteced by hamming 
+node5 : received and drop  duplicated message with id = 3 with content = Compared to internal combustion engine (ICE) vehicles,and piggy backing ACK =1 at time = 2.760000
+node5Payload has other type of error than modification
+node4 : received message with id = 4 and content = Auroras display dynamic patterns of brilliant lights/ACK = 2   and piggy backing ACK =1 at time = 3.200000
+node4 No Error Deteced by hamming 
+node4 : will send msg with id = 4 and content = $electric cars are quieter,$ with Duplication  with delay and piggy backing ACK = 5 at time = 3.200000
+node5 : received message with id = 4 and content = electric cars are quieter,ACK = 2   and piggy backing ACK =5 at time = 7.050000
+node5 No Error Deteced by hamming 
+node5 : will send msg with id = 5 and content = $that appear as curtains,$and piggy backing ACK = 5 at time = 7.050000
+node5 : will send msg with id = 6 and content = $rays, spirals/$$and piggy backing ACK = 5 at time = 7.050000
+node5 : will drop message with id = 7 and content = $or dynamic flickers covering the entire sky/$$and piggy backing ACK =5 at time = 7.050000
+node5 : received and drop  duplicated message with id = 4 with content = electric cars are quieter,and piggy backing ACK =5 at time = 7.060000
+node5Payload has other type of error than modification
+node5 : finish sending frames at time = 7.060000
+node4 : received message with id = 5 and content = that appear as curtains,ACK = 2   and piggy backing ACK =5 at time = 8.400000
+node4 No Error Deteced by hamming 
+node4 : will send msg with id = 5 and content = $have no exhaust emissions, and lower emissions overall.$and piggy backing ACK = 6 at time = 8.400000
+node4 : will send msg with id = 6 and content = $In the United States and the European Union,$and piggy backing ACK = 6 at time = 8.400000
+node4 : will send msg with id = 7 and content = $as of 2220, the total cost of ownership of recent electric vehicles$ Modification and piggy backing ACK = 6 at time = 8.400000
+node4 : will send msg with id = 8 and content = $is cheaper/$ than that of equivalent ICE cars,$and piggy backing ACK = 6 at time = 8.400000
+node4 : received message with id = 6 and content = rays, spirals$ACK = 2   and piggy backing ACK =5 at time = 8.450000
+node4 No Error Deteced by hamming 
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 3.500000
+node5 : received message with id = 5 and content = have no exhaust emissions, and lower emissions overall.ACK = 2   and piggy backing ACK =6 at time = 10.150000
+node5 No Error Deteced by hamming 
+node5 : received message with id = 6 and content = In the United States and the European Union,ACK = 2   and piggy backing ACK =6 at time = 10.200000
+node5 No Error Deteced by hamming 
+node5 : received message with id = 7 and content = as of 2220, the total cost of ownership of recent electric vehicles  with Modification and NACK = 3  and piggy backing ACK =6 at time = 10.250000
+node5 Error Position = 483Corrected message = as of 2020, the total cost of ownership of recent electric vehicles.
+node5 : received message with id = 8 and content = is cheaper$ than that of equivalent ICE cars,ACK = 2   and piggy backing ACK =6 at time = 10.300000
+node5 No Error Deteced by hamming 
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 3.600000
+node4 : will send msg with id = 9 and content = $due to lower fueling and maintenance costs/$/$.$and piggy backing ACK = 7 at time = 12.250000
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 3.700000
+node4 : will send msg with id = 10 and content = $Charging an electric car can be done at a variety of charging stations;$and piggy backing ACK = 7 at time = 12.350000
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 3.760000
-node5 : received message! with id = 5 and content = have no exhaust emissions, and lower emissions overall.  with Modification and NACK = 3and piggy backing ACK =5 at time = 4.450000
-node5 Error Position = 14Corrected message = hcve no exhaust emissions, and lower emissions overall..
-node5 : received message! with id = 6 and content = In the United States and the European Union,  with Modification and NACK = 3and piggy backing ACK =5 at time = 4.500000
-node5 Error Position = 6Corrected message = Kn the United States and the European Union,.
-node5 : received message! with id = 7 and content = as of 2220, the total cost of ownership of recent electric vehicles  with Modification and NACK = 3and piggy backing ACK =5 at time = 4.550000
-node5 Error Position = 12Corrected message = a{ of 2220, the total cost of ownership of recent electric vehicles.
-node5 : received message! with id = 8 and content = is cheaper$ than that of equivalent ICE cars,  with Modification and NACK = 3and piggy backing ACK =6 at time = 4.650000
-node5 Error Position = 10Corrected message = iS cheaper$ than that of equivalent ICE cars,.
-node5 : received message! with id = 9 and content = due to lower fueling and maintenance costs$$.  with Modification and NACK = 3and piggy backing ACK =6 at time = 4.700000
-node5 Error Position = 2Corrected message = Due to lower fueling and maintenance costs$$..
-node5 : received message! with id = 10 and content = Charging an electric car can be done at a variety of charging stations;  with Modification and NACK = 3and piggy backing ACK =6 at time = 4.750000
-node5 Error Position = 10Corrected message = CHarging an electric car can be done at a variety of charging stations;.
-node5 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 4.950000
+node4 : will drop message with id = 11 and content = $these charging stations can be installed in both houses// and public areas.$and piggy backing ACK =7 at time = 12.450000
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 6.350000
+node4 : finish sending frames at time = 12.550000
+Both nodes finished..session finished.. at time = 12.550000
+node5 : received message with id = 9 and content = due to lower fueling and maintenance costs$$.ACK = 2   and piggy backing ACK =7 at time = 14.700000
+node5 No Error Deteced by hamming 
+node5 : received message with id = 10 and content = Charging an electric car can be done at a variety of charging stations;ACK = 2   and piggy backing ACK =7 at time = 14.850000
+node5 No Error Deteced by hamming 
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 6.450000
+Both nodes finished..session finished.. at time = 17.350000
 node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 6.550000
-node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 6.700000
-node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 6.800000
-node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 6.900000
-node5 : received message with id = 4 and content = electric cars are quieter,  with Modification and NACK = 3  and piggy backing ACK =5 at time = 7.400000
-node5 Error Position = 6Corrected message = glectric cars are quieter,.
-node5 : received and drop  duplicated message with id = 4 with content = electric cars are quieter,and piggy backing ACK =5 at time = 7.410000
-node5 Error Position = 6Corrected message = glectric cars are quieter,.
-node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 10.050000
-node4 : received nth as the paired node finished sending frames 
-Both nodes finished..session finished.. at time = 10.110000
+Both nodes finished..session finished.. at time = 17.550000

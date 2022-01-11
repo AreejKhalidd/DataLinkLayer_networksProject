@@ -47,6 +47,8 @@ class Node : public cSimpleModule
     bool  recghalt = false;
     vector <bool> sentack;
     vector <bool> Recsentack;
+    bool prevnack = false;
+    int waitfor = -1;
     //SRP////////////////////////////////////////////////////////////////////////////////
     int RwindowSize = 0;  // initialize bakhdo mn node tnya el ha-receive menha
     int RWindowStart = 0; // b3mlo update lma ba reiceve sah
